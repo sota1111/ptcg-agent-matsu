@@ -24,7 +24,7 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Files/dirs to scan (our own code only; cg/ is engine vendor code).
-TARGET_DIRS = ["agents", "eval"]
+TARGET_DIRS = ["agents", "eval", "train"]
 TARGET_FILES = ["main.py"]
 # eval/run_match.py predates SOT-1671 (SOT-1670 probe script, kept verbatim
 # as it is line-referenced from docs/engine-facts.md).

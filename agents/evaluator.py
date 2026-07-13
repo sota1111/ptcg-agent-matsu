@@ -12,8 +12,16 @@ SimpleNamespace. Every feature derives from state/card ATTRIBUTES visible in
 the observation (prizes, HP, energy counts, hand/deck sizes) — per-card
 weight tables keyed by card ID/name are forbidden
 (scripts/lint_hardcoded_cards.py).
+
+SOT-1674 adds `LearnedEvaluator`: a logistic value model over
+agents/features.py vectors, trained on self-play logs
+(train/gen_selfplay.py + train/train_value.py) and loaded from a JSON
+weight file. Select it per agent with the string spec
+`evaluator="learned"` (bench: --config-a '{"evaluator": "learned"}').
 """
+import json
 import math
+import os
 
 # Feature weights (externally overridable for SOT-1673 ablation). Scores are
 # per-side; the value is a logistic squash of (score_me - score_opp).
@@ -86,3 +94,73 @@ class HeuristicEvaluator(Evaluator):
         if (getattr(p, "deckCount", 0) or 0) == 0:
             score += w["deck_empty"]
         return score
+
+
+DEFAULT_MODEL_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "train", "value_model.json")
+
+
+class LearnedEvaluator(Evaluator):
+    """Self-play-trained logistic value model (SOT-1674).
+
+    v = sigmoid(w · standardize(featurize(obs, root_player)) + b), with
+    exact values on terminal states (same contract as HeuristicEvaluator).
+    The model file records the feature names it was trained on; a mismatch
+    with the running agents/features.py raises at load time rather than
+    silently mis-scoring.
+    """
+
+    def __init__(self, model_path: str | None = None, model: dict | None = None,
+                 card_index=None):
+        from .features import FEATURE_NAMES, featurize
+        self._featurize = featurize
+        self._card_index = card_index
+        if model is None:
+            path = model_path or DEFAULT_MODEL_PATH
+            with open(path) as f:
+                model = json.load(f)
+        names = tuple(model.get("feature_names", ()))
+        if names != FEATURE_NAMES:
+            raise ValueError(
+                "value model feature set does not match agents/features.py "
+                f"(model has {len(names)}, code has {len(FEATURE_NAMES)}); "
+                "re-run train/train_value.py")
+        self.weights = [float(x) for x in model["weights"]]
+        self.bias = float(model.get("bias", 0.0))
+        self.mean = [float(x) for x in model.get("mean", [0.0] * len(names))]
+        self.std = [float(x) or 1.0
+                    for x in model.get("std", [1.0] * len(names))]
+
+    def evaluate(self, obs, root_player: int) -> float:
+        current = getattr(obs, "current", None)
+        if current is None:
+            return 0.5
+        result = getattr(current, "result", -1)
+        if result is not None and result != -1:
+            if result == root_player:
+                return 1.0
+            if result == 1 - root_player:
+                return 0.0
+            return 0.5  # draw (result == 2) or unknown future value
+        x = self._featurize(obs, root_player, self._card_index)
+        z = self.bias
+        for xi, mi, si, wi in zip(x, self.mean, self.std, self.weights):
+            z += wi * (xi - mi) / si
+        if z >= 0:
+            return 1.0 / (1.0 + math.exp(-z))
+        e = math.exp(z)
+        return e / (1.0 + e)
+
+
+def make_evaluator(spec, card_index=None) -> Evaluator:
+    """Resolve an evaluator spec: an Evaluator instance passes through;
+    "heuristic" / "learned" build the corresponding implementation (this is
+    what lets eval/bench.py switch value functions from --config JSON)."""
+    if isinstance(spec, Evaluator):
+        return spec
+    if spec in (None, "heuristic"):
+        return HeuristicEvaluator()
+    if spec == "learned":
+        return LearnedEvaluator(card_index=card_index)
+    raise ValueError(f"unknown evaluator spec: {spec!r}")

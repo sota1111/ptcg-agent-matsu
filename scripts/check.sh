@@ -12,7 +12,7 @@ echo "== forbidden-term lint =="
 "$PY" scripts/lint_hardcoded_cards.py
 
 echo "== syntax check =="
-"$PY" -m compileall -q agents eval scripts tests
+"$PY" -m compileall -q agents eval scripts tests train
 
 echo "== unit tests =="
 "$PY" -m unittest discover -s tests -t . -v
