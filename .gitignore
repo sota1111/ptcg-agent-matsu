@@ -12,3 +12,6 @@ __pycache__/
 *.pyc
 .env
 .DS_Store
+
+# --- SOT-1674 training logs (large, regenerable) ---
+/train/logs/

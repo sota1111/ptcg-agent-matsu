@@ -23,6 +23,7 @@ import time
 
 from .base import BaseAgent
 from .cards import shared_index
+from .evaluator import make_evaluator
 from .greedy_agent import GreedyAgent
 from .observation import View
 from .planner import MctsPlanner, PlannerConfig
@@ -40,6 +41,10 @@ class MctsAgent(BaseAgent):
         # otherwise land inside the first TIMED decision (budget criterion).
         self._card_index = card_index if card_index is not None \
             else shared_index()
+        # String specs ("heuristic" / "learned") come from bench --config
+        # JSON (SOT-1674); Evaluator instances pass through unchanged.
+        if evaluator is not None and not hasattr(evaluator, "evaluate"):
+            evaluator = make_evaluator(evaluator, card_index=self._card_index)
         self._evaluator = evaluator
         self._backend = backend
         self._clock = clock
