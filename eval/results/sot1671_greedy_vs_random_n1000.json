@@ -1,0 +1,33 @@
+{
+  "agent_a": "greedy",
+  "agent_b": "random",
+  "n_matches": 1000,
+  "seed": 20260713,
+  "deck": "deck.csv",
+  "wins_a": 938,
+  "wins_b": 62,
+  "draws": 0,
+  "unfinished": 0,
+  "rejects": 0,
+  "exceptions": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "decisions": 28660,
+  "winrate_a_excl_draws": 0.938,
+  "wilson95_excl_draws": [
+    0.9213116000993365,
+    0.9513360367389853
+  ],
+  "winrate_a_draws_half": 0.938,
+  "time_per_match_sec": {
+    "mean": 0.0026114103021100165,
+    "median": 0.0021607434609904885,
+    "max": 0.023546096868813038,
+    "total": 2.6114103021100163
+  },
+  "time_per_decision_ms": {
+    "mean": 0.09182449757174442,
+    "max": 1.3081164927118356
+  },
+  "decisions_per_match_mean": 28.66
+}

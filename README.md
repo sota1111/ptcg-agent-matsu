@@ -1,4 +1,4 @@
-# ptcg-agent-ume
+# ptcg-agent-matsu
 
 Agent & local evaluation environment for the **Pokémon TCG AI Battle Challenge** (Kaggle).
 
@@ -14,8 +14,15 @@ be redistributed**. They are **gitignored** and never committed. Only our own co
 ```
 main.py            # submission entry: agent(obs_dict) -> list[int]  (tracked)
 deck.csv           # our 60-card deck                                (tracked)
+agents/            # 4-layer agent package (SOT-1671):               (tracked)
+                   #   observation.py = [1] Observation Adapter
+                   #   actions.py     = [2] Action Enumerator
+                   #   random_agent.py / greedy_agent.py = baselines
+                   #   rng.py (seeded RNG) / cards.py (attribute features)
 eval/run_match.py  # local self-play match runner                   (tracked)
-scripts/           # setup + build helpers                          (tracked)
+eval/bench.py      # N-match benchmark (win rate + Wilson CI)       (tracked)
+tests/             # unittest suite (engine tests self-skip w/o cg/) (tracked)
+scripts/           # setup + build + check helpers                  (tracked)
 cg/                # cabt engine bindings (gitignored, license)
 data/              # card CSVs (gitignored, license)
 ```
@@ -27,7 +34,17 @@ bash scripts/setup_engine.sh          # copies cg/ + data/ from the Kaggle downl
 venv/bin/python eval/run_match.py     # run one local self-play match
 ```
 
+## Verify (lint + tests) — also run by CI
+```bash
+bash scripts/check.sh                 # forbidden-term lint + syntax + unittest
+venv/bin/python eval/bench.py --agent-a greedy --agent-b random --n 1000
+```
+The forbidden-term linter (`scripts/lint_hardcoded_cards.py`) rejects hardcoded
+card names / card IDs in agent code and global `random`/`np.random` use in
+`agents/` — evaluation must derive from card attributes and all agent
+randomness from an injected seed. Baseline results: `docs/baselines.md`.
+
 ## Build a submission
 ```bash
-bash scripts/build_submission.sh      # -> submission.tar.gz (main.py + deck.csv + cg/)
+bash scripts/build_submission.sh      # -> submission.tar.gz (main.py + deck.csv + agents/ + cg/)
 ```

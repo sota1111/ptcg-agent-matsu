@@ -1,11 +1,17 @@
 import os
-import random
 
-from cg.api import Observation, to_observation_class
+from agents import GreedyAgent
+
+# Agent seed: externally injectable (SOT-1671 RNG discipline); the default
+# only fixes the tie-break/fallback stream, the engine shuffles independently.
+_DEFAULT_SEED = 20260713
+
+_agent: GreedyAgent | None = None
+
 
 def read_deck_csv() -> list[int]:
     """Read deck.csv.
-    
+
     Returns:
         list[int]: A list of card IDs in the deck.
     """
@@ -19,20 +25,19 @@ def read_deck_csv() -> list[int]:
         deck.append(int(csv[i]))
     return deck
 
+
 def agent(obs_dict: dict) -> list[int]:
-    """Implement Your Pokémon Trading Card Game Agent.
+    """Pokémon Trading Card Game Agent (GreedyAgent baseline, SOT-1671).
 
     Each element in the returned list must be >= 0 and < len(obs.select.option).
     The list length must be between obs.select.minCount and obs.select.maxCount (inclusive), with no duplicate elements.
-    
+    On the initial call obs.select is None and the 60-card deck is returned.
+
     Returns:
         list[int]: A list of option index.
     """
-    obs: Observation = to_observation_class(obs_dict)
-    if obs.select == None:
-        # In the initial selection, the obs.select is None, and it is necessary to return the deck.
-        # The deck is a list of 60 card IDs.
-        # The deck must comply with the Pokémon Trading Card Game rules.
-        return read_deck_csv()
-    
-    return random.sample(list(range(len(obs.select.option))), obs.select.maxCount)  # select randomly
+    global _agent
+    if _agent is None:
+        seed = int(os.environ.get("AGENT_SEED", _DEFAULT_SEED))
+        _agent = GreedyAgent(seed=seed, deck=read_deck_csv())
+    return _agent.act(obs_dict)
