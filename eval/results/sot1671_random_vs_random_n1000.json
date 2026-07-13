@@ -1,0 +1,33 @@
+{
+  "agent_a": "random",
+  "agent_b": "random",
+  "n_matches": 1000,
+  "seed": 20260713,
+  "deck": "deck.csv",
+  "wins_a": 489,
+  "wins_b": 511,
+  "draws": 0,
+  "unfinished": 0,
+  "rejects": 0,
+  "exceptions": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "decisions": 51215,
+  "winrate_a_excl_draws": 0.489,
+  "wilson95_excl_draws": [
+    0.4581185876110968,
+    0.5199656041578039
+  ],
+  "winrate_a_draws_half": 0.489,
+  "time_per_match_sec": {
+    "mean": 0.004525562809081748,
+    "median": 0.003172072465531528,
+    "max": 0.020886596059426665,
+    "total": 4.525562809081748
+  },
+  "time_per_decision_ms": {
+    "mean": 0.08688829252019543,
+    "max": 0.11986522720410273
+  },
+  "decisions_per_match_mean": 51.215
+}
