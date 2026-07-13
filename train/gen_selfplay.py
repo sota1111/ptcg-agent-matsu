@@ -93,11 +93,15 @@ def play_and_log(agent0, agent1, cards, heuristic, match_id: int):
                 return result, records
             actor = current.get("yourIndex", 0)
             turn = current.get("turn", 0) or 0
+            # One record per engine turn; turn 0 is the setup phase (prizes
+            # not dealt yet) and never a rollout leaf, so it is skipped.
             if turn != last_turn:
                 last_turn = turn
-                x = featurize(obs, actor, cards)
-                h = heuristic.evaluate(_to_namespace({"current": current}), actor)
-                records.append((actor, turn, h, x))
+                if turn > 0:
+                    x = featurize(obs, actor, cards)
+                    h = heuristic.evaluate(
+                        _to_namespace({"current": current}), actor)
+                    records.append((actor, turn, h, x))
             agent = agent0 if actor == 0 else agent1
             obs = game.battle_select(agent.act(obs))
             decisions += 1

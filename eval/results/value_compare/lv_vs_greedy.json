@@ -1,0 +1,111 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "greedy",
+ "deck": "deck.csv",
+ "config_a": {
+  "evaluator": "learned",
+  "rollout_turns": 2,
+  "rollout_depth": 60,
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "config_b": {},
+ "shards": [
+  {
+   "seed": 6174410,
+   "n_matches": 20,
+   "wins_a": 13,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6174401,
+   "n_matches": 20,
+   "wins_a": 13,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6174402,
+   "n_matches": 20,
+   "wins_a": 14,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6174403,
+   "n_matches": 20,
+   "wins_a": 10,
+   "wins_b": 10,
+   "draws": 0
+  },
+  {
+   "seed": 6174404,
+   "n_matches": 20,
+   "wins_a": 12,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6174405,
+   "n_matches": 20,
+   "wins_a": 12,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6174406,
+   "n_matches": 20,
+   "wins_a": 8,
+   "wins_b": 12,
+   "draws": 0
+  },
+  {
+   "seed": 6174407,
+   "n_matches": 20,
+   "wins_a": 9,
+   "wins_b": 11,
+   "draws": 0
+  },
+  {
+   "seed": 6174408,
+   "n_matches": 20,
+   "wins_a": 7,
+   "wins_b": 13,
+   "draws": 0
+  },
+  {
+   "seed": 6174409,
+   "n_matches": 20,
+   "wins_a": 12,
+   "wins_b": 8,
+   "draws": 0
+  }
+ ],
+ "n_matches": 200,
+ "wins_a": 110,
+ "wins_b": 90,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 7749,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 642.1387391164899,
+ "winrate_a_excl_draws": 0.55,
+ "wilson95_excl_draws": [
+  0.48075615138475697,
+  0.6173593159775166
+ ],
+ "winrate_a_draws_half": 0.55
+}

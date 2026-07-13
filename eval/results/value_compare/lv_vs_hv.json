@@ -1,0 +1,120 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "mcts",
+ "deck": "deck.csv",
+ "config_a": {
+  "evaluator": "learned",
+  "rollout_turns": 2,
+  "rollout_depth": 60,
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "config_b": {
+  "evaluator": "heuristic",
+  "rollout_turns": 2,
+  "rollout_depth": 60,
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "shards": [
+  {
+   "seed": 6174510,
+   "n_matches": 20,
+   "wins_a": 13,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6174501,
+   "n_matches": 20,
+   "wins_a": 11,
+   "wins_b": 9,
+   "draws": 0
+  },
+  {
+   "seed": 6174502,
+   "n_matches": 20,
+   "wins_a": 11,
+   "wins_b": 9,
+   "draws": 0
+  },
+  {
+   "seed": 6174503,
+   "n_matches": 20,
+   "wins_a": 11,
+   "wins_b": 9,
+   "draws": 0
+  },
+  {
+   "seed": 6174504,
+   "n_matches": 20,
+   "wins_a": 12,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6174505,
+   "n_matches": 20,
+   "wins_a": 11,
+   "wins_b": 9,
+   "draws": 0
+  },
+  {
+   "seed": 6174506,
+   "n_matches": 20,
+   "wins_a": 13,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6174507,
+   "n_matches": 20,
+   "wins_a": 9,
+   "wins_b": 11,
+   "draws": 0
+  },
+  {
+   "seed": 6174508,
+   "n_matches": 20,
+   "wins_a": 8,
+   "wins_b": 12,
+   "draws": 0
+  },
+  {
+   "seed": 6174509,
+   "n_matches": 20,
+   "wins_a": 10,
+   "wins_b": 10,
+   "draws": 0
+  }
+ ],
+ "n_matches": 200,
+ "wins_a": 109,
+ "wins_b": 91,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 7750,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 640.9928039647639,
+ "winrate_a_excl_draws": 0.545,
+ "wilson95_excl_draws": [
+  0.47578611372488105,
+  0.6125178069011651
+ ],
+ "winrate_a_draws_half": 0.545
+}
