@@ -1,0 +1,50 @@
+{
+  "agent_a": "mcts",
+  "agent_b": "greedy",
+  "n_matches": 25,
+  "seed": 93009,
+  "deck": "deck.csv",
+  "config_a": {
+    "max_root_actions": 6,
+    "max_tree_depth": 1,
+    "rollout_turns": 100,
+    "rollout_depth": 200,
+    "n_worlds": 4,
+    "time_budget_s": 0.8,
+    "deviate_margin": 0.1
+  },
+  "config_b": {},
+  "wins_a": 15,
+  "wins_b": 10,
+  "draws": 0,
+  "unfinished": 0,
+  "rejects": 0,
+  "exceptions": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "decisions": 800,
+  "budget_violations_a": 0,
+  "budget_violations_b": 0,
+  "planner_fallbacks_a": 0,
+  "planner_fallbacks_b": 0,
+  "degraded_count_a": 0,
+  "degraded_count_b": 0,
+  "planner_move_max_ms": 640.875400044024,
+  "winrate_a_excl_draws": 0.6,
+  "wilson95_excl_draws": [
+    0.40739127785127344,
+    0.7659694233580909
+  ],
+  "winrate_a_draws_half": 0.6,
+  "time_per_match_sec": {
+    "mean": 8.692552980147303,
+    "median": 7.058601310942322,
+    "max": 22.380242456914857,
+    "total": 217.31382450368255
+  },
+  "time_per_decision_ms": {
+    "mean": 260.893003666486,
+    "max": 390.0909656962461
+  },
+  "decisions_per_match_mean": 32.0
+}
