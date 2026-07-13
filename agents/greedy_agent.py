@@ -143,6 +143,11 @@ class GreedyAgent(BaseAgent):
         ranked = sorted(range(len(scores)), key=lambda i: (-scores[i], i))
         return sorted(ranked[:k])
 
+    def score_options(self, view: View) -> list:
+        """Per-option scores for the current selection (used as the root
+        prior by the MCTS planner, SOT-1672)."""
+        return [self._score_option(view, opt) for opt in view.select.options]
+
     @staticmethod
     def _is_known_context(context) -> bool:
         # SelectContext values shipped with the engine (cg/api.py:68-118).

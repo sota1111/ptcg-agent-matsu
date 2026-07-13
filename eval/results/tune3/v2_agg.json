@@ -1,0 +1,83 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "greedy",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "uct_c": 0.7
+ },
+ "config_b": {},
+ "shards": [
+  {
+   "seed": 92007,
+   "n_matches": 30,
+   "wins_a": 20,
+   "wins_b": 10,
+   "draws": 0
+  },
+  {
+   "seed": 92008,
+   "n_matches": 30,
+   "wins_a": 14,
+   "wins_b": 16,
+   "draws": 0
+  },
+  {
+   "seed": 92009,
+   "n_matches": 30,
+   "wins_a": 20,
+   "wins_b": 10,
+   "draws": 0
+  },
+  {
+   "seed": 92010,
+   "n_matches": 30,
+   "wins_a": 18,
+   "wins_b": 12,
+   "draws": 0
+  },
+  {
+   "seed": 92011,
+   "n_matches": 30,
+   "wins_a": 18,
+   "wins_b": 12,
+   "draws": 0
+  },
+  {
+   "seed": 92012,
+   "n_matches": 30,
+   "wins_a": 19,
+   "wins_b": 11,
+   "draws": 0
+  }
+ ],
+ "n_matches": 180,
+ "wins_a": 109,
+ "wins_b": 71,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 5940,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 640.6641770154238,
+ "winrate_a_excl_draws": 0.6055555555555555,
+ "wilson95_excl_draws": [
+  0.5326680819105162,
+  0.6740317574171432
+ ],
+ "winrate_a_draws_half": 0.6055555555555555
+}
