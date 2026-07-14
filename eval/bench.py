@@ -87,7 +87,8 @@ def play_match(agent0, agent1):
 
 
 # Planner counters picked up from agents that expose them (MctsAgent).
-PLANNER_COUNTERS = ("budget_violations", "planner_fallbacks", "degraded_count")
+PLANNER_COUNTERS = ("budget_violations", "planner_fallbacks", "degraded_count",
+                    "rollout_cutoffs")
 
 
 def run_bench(agent_a: str, agent_b: str, n: int, seed: int, deck_path: str,
@@ -199,6 +200,7 @@ RESULT: {report['agent_a']} vs {report['agent_b']} (n={report['n_matches']})
   win rate A (draws=0.5)  : {report['winrate_a_draws_half']:.4f}
   engine rejects: {report['rejects']}  agent exceptions: {report['exceptions']}  fallbacks: A={report['fallbacks_a']} B={report['fallbacks_b']}
   budget violations: A={report['budget_violations_a']} B={report['budget_violations_b']}  planner fallbacks: A={report['planner_fallbacks_a']} B={report['planner_fallbacks_b']}  degraded: A={report['degraded_count_a']} B={report['degraded_count_b']}  planner move max: {report['planner_move_max_ms']:.1f} ms
+  rollout cutoffs (early cutoff): A={report['rollout_cutoffs_a']} B={report['rollout_cutoffs_b']}
   time/match: mean {tpm['mean'] * 1000:.2f} ms  median {tpm['median'] * 1000:.2f} ms  max {tpm['max'] * 1000:.2f} ms  total {tpm['total']:.1f} s
   time/decision: mean {tpd['mean']:.3f} ms  max {tpd['max']:.3f} ms  decisions/match mean {report['decisions_per_match_mean']:.1f}
 """)

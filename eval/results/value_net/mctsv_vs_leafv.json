@@ -1,0 +1,405 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "mcts",
+ "deck": "deck.csv",
+ "config_a": {
+  "evaluator": "value_net",
+  "rollout_cutoff": {
+   "min_steps": 20
+  },
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "config_b": {
+  "evaluator": "value_net",
+  "rollout_turns": 2,
+  "rollout_depth": 60,
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "shards": [
+  {
+   "seed": 6179310,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179311,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179312,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179313,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179314,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179315,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179316,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179317,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179318,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179319,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179301,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179320,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179321,
+   "n_matches": 10,
+   "wins_a": 2,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6179322,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179323,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6179324,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6179325,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179326,
+   "n_matches": 10,
+   "wins_a": 2,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6179327,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179328,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179329,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179302,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179330,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179331,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179332,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179333,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179334,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179335,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 6179336,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179337,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179338,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 6179339,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179303,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 6179340,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 6179341,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 6179342,
+   "n_matches": 10,
+   "wins_a": 2,
+   "wins_b": 8,
+   "draws": 0
+  },
+  {
+   "seed": 6179343,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179344,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179345,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179346,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179347,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179348,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 6179349,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 6179304,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179350,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179305,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179306,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6179307,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6179308,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6179309,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  }
+ ],
+ "n_matches": 500,
+ "wins_a": 251,
+ "wins_b": 249,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 17544,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "rollout_cutoffs_a": 288925,
+ "rollout_cutoffs_b": 0,
+ "planner_move_max_ms": 642.4009948968887,
+ "winrate_a_excl_draws": 0.502,
+ "wilson95_excl_draws": [
+  0.45832636322986225,
+  0.5456431394082917
+ ],
+ "winrate_a_draws_half": 0.502
+}

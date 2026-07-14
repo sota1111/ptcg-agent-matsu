@@ -75,6 +75,10 @@ class MctsAgent(BaseAgent):
     def degraded_count(self) -> int:
         return self._planner.degraded_count if self._planner else 0
 
+    @property
+    def rollout_cutoffs(self) -> int:
+        return self._planner.rollout_cutoffs if self._planner else 0
+
     def choose(self, view: View) -> list:
         t0 = self._clock()
         rng = self.rng.child(f"plan{self.decision_count}")

@@ -1,0 +1,65 @@
+{
+  "agent_a": "mcts",
+  "agent_b": "mcts",
+  "n_matches": 10,
+  "seed": 6179302,
+  "deck": "deck.csv",
+  "config_a": {
+    "evaluator": "value_net",
+    "rollout_cutoff": {
+      "min_steps": 20
+    },
+    "rollout_turns": 100,
+    "rollout_depth": 200,
+    "max_root_actions": 6,
+    "max_tree_depth": 1,
+    "n_worlds": 4,
+    "time_budget_s": 0.8,
+    "deviate_margin": 0.1
+  },
+  "config_b": {
+    "evaluator": "value_net",
+    "rollout_turns": 2,
+    "rollout_depth": 60,
+    "max_root_actions": 6,
+    "max_tree_depth": 1,
+    "n_worlds": 4,
+    "time_budget_s": 0.8,
+    "deviate_margin": 0.1
+  },
+  "wins_a": 4,
+  "wins_b": 6,
+  "draws": 0,
+  "unfinished": 0,
+  "rejects": 0,
+  "exceptions": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "decisions": 264,
+  "budget_violations_a": 0,
+  "budget_violations_b": 0,
+  "planner_fallbacks_a": 0,
+  "planner_fallbacks_b": 0,
+  "degraded_count_a": 0,
+  "degraded_count_b": 0,
+  "rollout_cutoffs_a": 3115,
+  "rollout_cutoffs_b": 0,
+  "planner_move_max_ms": 642.150339204818,
+  "winrate_a_excl_draws": 0.4,
+  "wilson95_excl_draws": [
+    0.16817758120350962,
+    0.6873304525498136
+  ],
+  "winrate_a_draws_half": 0.4,
+  "time_per_match_sec": {
+    "mean": 13.733457271405495,
+    "median": 10.598849587957375,
+    "max": 35.2995348488912,
+    "total": 137.33457271405496
+  },
+  "time_per_decision_ms": {
+    "mean": 506.92967340436,
+    "max": 578.6808991621508
+  },
+  "decisions_per_match_mean": 26.4
+}

@@ -101,6 +101,13 @@ class PlannerConfig:
     # visit-max aggregation; small positive values suppress false deviations
     # in the low-sample regime (few rollouts per alternative).
     deviate_margin: float = 0.0
+    # Early Cutoff (SOT-1679, arXiv:1808.04794 §III-B4, the paper's mctsV):
+    # {"min_steps": k} plays each rollout for at least k steps, then stops at
+    # the first turn boundary after that and returns the leaf evaluator's win
+    # probability instead of playing on (pair with "evaluator": "value_net").
+    # None (default) keeps rollouts governed by rollout_depth/rollout_turns
+    # alone — existing behavior unchanged.
+    rollout_cutoff: dict | None = None
     # mctsS (SOT-1677, arXiv:1808.04794 §III-B3): when True, every tree
     # expansion becomes a macro action — the edge's action is stepped and
     # the gain-loss greedy TurnSolver then completes the acting player's
@@ -337,6 +344,7 @@ class MctsPlanner:
         self._greedy = GreedyAgent(seed=0, card_index=card_index)
         self._solver = None
         self.degraded_count = 0   # decisions answered by the greedy prior
+        self.rollout_cutoffs = 0  # rollouts ended by the Early Cutoff rule
         self.last_stats = {}
 
     @property
@@ -566,18 +574,33 @@ class MctsPlanner:
         sid, obs = node.sid, node.obs
         start_turn = getattr(getattr(obs, "current", None), "turn", 0) or 0
         turn_cap = start_turn + self.config.rollout_turns
+        cutoff = self.config.rollout_cutoff
+        min_steps = int(cutoff.get("min_steps", 20)) if cutoff else None
+        steps = 0
+        turn_at_min = None  # turn in which the min_steps-th step landed
         transients = []
         try:
             for _ in range(self.config.rollout_depth):
                 if _obs_result(obs) != -1 or obs.select is None:
                     break
-                if (getattr(obs.current, "turn", 0) or 0) >= turn_cap:
+                turn_now = getattr(obs.current, "turn", 0) or 0
+                if turn_now >= turn_cap:
+                    break
+                # Early Cutoff (§III-B4): at least min_steps steps, then stop
+                # at the first turn boundary (board settled) and let the leaf
+                # evaluator score the state instead of playing on.
+                if turn_at_min is not None and turn_now > turn_at_min:
+                    self.rollout_cutoffs += 1
                     break
                 if self._clock() >= deadline:
                     break
                 action = self._rollout_action(obs, rng)
                 sid, obs = self.backend.step(sid, action)
                 transients.append(sid)
+                steps += 1
+                if min_steps is not None and turn_at_min is None \
+                        and steps >= min_steps:
+                    turn_at_min = getattr(obs.current, "turn", 0) or 0
             terminal = _terminal_value(obs, root_player)
             if terminal is not None:
                 return terminal
