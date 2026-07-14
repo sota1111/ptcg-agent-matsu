@@ -112,20 +112,24 @@ class LearnedEvaluator(Evaluator):
     """
 
     def __init__(self, model_path: str | None = None, model: dict | None = None,
-                 card_index=None):
-        from .features import FEATURE_NAMES, featurize
-        self._featurize = featurize
+                 card_index=None, embeddings=None):
+        from .features import make_featurizer
         self._card_index = card_index
         if model is None:
             path = model_path or DEFAULT_MODEL_PATH
             with open(path) as f:
                 model = json.load(f)
+        # feature_set selects the extractor (SOT-1676): "v1" (default,
+        # backward compatible) or "v2" (embedding-extended board vector).
+        feature_set = model.get("feature_set", "v1")
+        expected_names, self._featurize = make_featurizer(
+            feature_set, embeddings=embeddings)
         names = tuple(model.get("feature_names", ()))
-        if names != FEATURE_NAMES:
+        if names != tuple(expected_names):
             raise ValueError(
-                "value model feature set does not match agents/features.py "
-                f"(model has {len(names)}, code has {len(FEATURE_NAMES)}); "
-                "re-run train/train_value.py")
+                f"value model feature set {feature_set!r} does not match "
+                f"agents/features.py (model has {len(names)}, code has "
+                f"{len(expected_names)}); re-run train/train_value.py")
         self.weights = [float(x) for x in model["weights"]]
         self.bias = float(model.get("bias", 0.0))
         self.mean = [float(x) for x in model.get("mean", [0.0] * len(names))]
