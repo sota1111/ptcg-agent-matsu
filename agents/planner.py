@@ -312,9 +312,14 @@ class MctsPlanner:
     """Determinized, anytime, PUCT-guided MCTS over the engine search API."""
 
     def __init__(self, own_deck, config=None, evaluator=None, backend=None,
-                 card_index=None, clock=time.perf_counter):
+                 card_index=None, clock=time.perf_counter, fills_fn=None):
         if not own_deck:
             raise ValueError("MctsPlanner requires the agent's 60-card deck")
+        # Determinization source: `fills_fn(raw_obs, own_deck, rng, card_index)
+        # -> Fills` replaces sample_fills per world. Constructor-injection only
+        # (SOT-1678 training-data generation); MctsAgent never sets it, so a
+        # battle agent always samples its worlds from the information set.
+        self._fills_fn = fills_fn or sample_fills
         self.config = config or PlannerConfig()
         self.evaluator = evaluator or HeuristicEvaluator()
         self._own_deck = list(own_deck)
@@ -422,7 +427,7 @@ class MctsPlanner:
     # ---- worlds -----------------------------------------------------------
 
     def _make_world(self, raw_obs, candidates, priors, root_player, rng):
-        fills = sample_fills(raw_obs, self._own_deck, rng, self.cards)
+        fills = self._fills_fn(raw_obs, self._own_deck, rng, self.cards)
         sid, obs = self.backend.begin(raw_obs, fills, manual_coin=True)
         root = _Node(sid, obs, root_player)
         if root.terminal is None:
