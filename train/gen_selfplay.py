@@ -37,7 +37,7 @@ from cg import game
 from agents import make_agent
 from agents.cards import shared_index
 from agents.evaluator import HeuristicEvaluator
-from agents.features import featurize
+from agents.features import make_featurizer
 from agents.rng import Rng
 
 MAX_DECISIONS = 100000  # engine draws long before this (BattleData.h:66-74)
@@ -73,7 +73,8 @@ def parse_mix(spec: str) -> list:
     return [(name, edge / total) for name, edge in pairs]
 
 
-def play_and_log(agent0, agent1, cards, heuristic, match_id: int):
+def play_and_log(agent0, agent1, cards, heuristic, match_id: int,
+                 featurize=make_featurizer("v1")[1]):
     """One match; returns (result, records) with one record per engine turn."""
     obs, start = game.battle_start(agent0._deck, agent1._deck)
     if obs is None:
@@ -116,12 +117,16 @@ def main():
     parser.add_argument("--seed", type=int, default=61674001)
     parser.add_argument("--deck", default="deck.csv")
     parser.add_argument("--mix", default="gg:0.6,gr:0.2,rg:0.2")
+    parser.add_argument("--features", default="v1", choices=("v1", "v2"),
+                        help="feature extractor: v1 = 32 scalars (SOT-1674), "
+                             "v2 = embedding-extended vector (SOT-1676)")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
     deck = load_deck(args.deck)
     mix = parse_mix(args.mix)
     cards = shared_index()
+    _, featurize = make_featurizer(args.features)
     heuristic = HeuristicEvaluator()
     base = Rng(args.seed)
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
@@ -134,7 +139,8 @@ def main():
             name0, name1 = MIX_AGENTS[kind]
             agent0 = make_agent(name0, seed=base.child(f"match{i}.a").seed, deck=deck)
             agent1 = make_agent(name1, seed=base.child(f"match{i}.b").seed, deck=deck)
-            result, records = play_and_log(agent0, agent1, cards, heuristic, i)
+            result, records = play_and_log(agent0, agent1, cards, heuristic,
+                                           i, featurize)
             stats["matches"] += 1
             if result not in (0, 1):  # draw/unfinished: no win/loss label
                 stats["draws" if result == 2 else "unfinished"] += 1
@@ -149,8 +155,8 @@ def main():
                 print(f"  {i + 1}/{args.n} matches, "
                       f"{stats['examples']} examples", flush=True)
 
-    print(f"DONE seed={args.seed} mix={args.mix} {stats} -> {args.out}",
-          flush=True)
+    print(f"DONE seed={args.seed} mix={args.mix} features={args.features} "
+          f"{stats} -> {args.out}", flush=True)
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ from array import array
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO)
 
-from agents.features import FEATURE_NAMES
+from agents.features import make_featurizer
 from agents.rng import Rng
 
 HOLDOUT_BUCKETS = (8, 9)  # crc32 % 10: 80/20 match-level split
@@ -147,24 +147,29 @@ def main():
     parser.add_argument("--l2", type=float, default=1e-6)
     parser.add_argument("--max-examples", type=int, default=250000)
     parser.add_argument("--seed", type=int, default=61674)
+    parser.add_argument("--features", default="v1", choices=("v1", "v2"),
+                        help="feature set the logs were generated with "
+                             "(gen_selfplay.py --features)")
     args = parser.parse_args()
 
+    feature_names, _ = make_featurizer(args.features)
     train, holdout = load_examples(args.logs, args.max_examples, args.seed)
     if not train or not holdout:
         raise SystemExit(f"not enough data (train={len(train)}, "
                          f"holdout={len(holdout)})")
     print(f"loaded train={len(train)} holdout={len(holdout)} "
-          f"features={len(FEATURE_NAMES)}", flush=True)
-    if len(train[0][3]) != len(FEATURE_NAMES):
+          f"features={len(feature_names)} ({args.features})", flush=True)
+    if len(train[0][3]) != len(feature_names):
         raise SystemExit("log feature length does not match agents/features.py "
-                         "— regenerate the logs")
+                         f"feature set {args.features!r} — regenerate the logs")
 
     mean, std = standardizer(train)
     w, b = fit(train, mean, std, args.epochs, args.lr, args.l2, args.seed)
     metrics = evaluate_holdout(holdout, mean, std, w, b)
 
     model = {
-        "feature_names": list(FEATURE_NAMES),
+        "feature_set": args.features,
+        "feature_names": list(feature_names),
         "weights": [round(x, 6) for x in w],
         "bias": round(b, 6),
         "mean": [round(x, 6) for x in mean],

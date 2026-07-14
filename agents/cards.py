@@ -1,14 +1,19 @@
-"""Card-attribute feature index (SOT-1671).
+"""Card-attribute feature index (SOT-1671) + learned card embeddings (SOT-1676).
 
 Evaluation features are derived ONLY from card attributes exposed by the
 engine's card master (`cg.api.all_card_data()` / `all_attack()`): HP, damage,
 energy requirements, prize impact (ex/megaEx), stages, retreat cost, etc.
 Per-card weight tables keyed by card ID or card name are forbidden
-(enforced by scripts/lint_hardcoded_cards.py).
+(enforced by scripts/lint_hardcoded_cards.py). `CardEmbeddings` is the one
+sanctioned per-card table: its vectors are LEARNED from the master's
+attribute/effect text by train/train_embeddings.py (arXiv:1808.04794 §IV-A),
+not hand-authored, and are keyed by ID only.
 
 Unknown card / attack IDs fall back to neutral default features — never crash
 (the enum/card pool may grow during the competition, cg/api.py:118).
 """
+import json
+import os
 from dataclasses import dataclass
 
 
@@ -35,6 +40,7 @@ class CardFeatures:
     mega_ex: bool
     tera: bool
     ace_spec: bool
+    has_ability: bool       # card has at least one skill (ability/effect)
     attack_ids: tuple
     max_attack_damage: int
     prize_value: int        # prizes the opponent takes when this is Knocked Out
@@ -56,7 +62,7 @@ def _default_card(card_id: int) -> CardFeatures:
         weakness=None, resistance=None, energy_type=-1,
         basic=False, stage1=False, stage2=False,
         ex=False, mega_ex=False, tera=False, ace_spec=False,
-        attack_ids=(), max_attack_damage=0,
+        has_ability=False, attack_ids=(), max_attack_damage=0,
         prize_value=_DEFAULT_PRIZE_VALUE,
     )
 
@@ -113,6 +119,7 @@ class CardIndex:
                 ex=ex, mega_ex=mega_ex,
                 tera=bool(_get(c, "tera", False)),
                 ace_spec=bool(_get(c, "aceSpec", False)),
+                has_ability=bool(_get(c, "skills", ()) or ()),
                 attack_ids=attack_ids,
                 max_attack_damage=max(
                     (self.attack(a).damage for a in attack_ids), default=0),
@@ -150,3 +157,88 @@ def shared_index() -> CardIndex:
     if _shared_index is None:
         _shared_index = CardIndex.from_engine()
     return _shared_index
+
+
+DEFAULT_EMBED_DIM = 10  # arXiv:1808.04794 §IV-A trains 10-dim card vectors
+DEFAULT_EMBEDDINGS_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "train", "card_embeddings.json")
+
+
+class CardEmbeddings:
+    """Card ID -> learned embedding vector (SOT-1676).
+
+    Loaded from train/train_embeddings.py output. Unknown / None / facedown
+    card IDs fall back to the `default` vector (the mean of all card vectors
+    at training time) — never crash, matching CardIndex's contract.
+    """
+
+    def __init__(self, dim: int = DEFAULT_EMBED_DIM, vectors=None,
+                 default=None):
+        self.dim = int(dim)
+        self._vectors = {}
+        for card_id, vec in (vectors or {}).items():
+            vec = [float(x) for x in vec]
+            if len(vec) != self.dim:
+                raise ValueError(
+                    f"embedding for card {card_id} has {len(vec)} dims, "
+                    f"expected {self.dim}")
+            self._vectors[int(card_id)] = vec
+        if default is not None:
+            self.default = [float(x) for x in default]
+            if len(self.default) != self.dim:
+                raise ValueError("default embedding dim mismatch")
+        else:
+            self.default = [0.0] * self.dim
+
+    @classmethod
+    def empty(cls, dim: int = DEFAULT_EMBED_DIM) -> "CardEmbeddings":
+        """No-vector fallback: every lookup returns the zero default."""
+        return cls(dim=dim)
+
+    @classmethod
+    def load(cls, path: str | None = None) -> "CardEmbeddings":
+        with open(path or DEFAULT_EMBEDDINGS_PATH) as f:
+            data = json.load(f)
+        return cls(dim=data["dim"], vectors=data.get("cards", {}),
+                   default=data.get("default"))
+
+    def vector(self, card_id) -> list:
+        """Embedding for a card ID; the default vector when unknown/None."""
+        if card_id is None:
+            return self.default
+        return self._vectors.get(int(card_id), self.default)
+
+    def mean(self, card_ids) -> list:
+        """Mean embedding of a card-ID collection; zeros when empty."""
+        total = [0.0] * self.dim
+        n = 0
+        for card_id in card_ids:
+            vec = self.vector(card_id)
+            for j in range(self.dim):
+                total[j] += vec[j]
+            n += 1
+        if n == 0:
+            return total
+        return [v / n for v in total]
+
+    def __len__(self) -> int:
+        return len(self._vectors)
+
+
+_shared_embeddings = None
+
+
+def shared_embeddings() -> CardEmbeddings:
+    """Process-wide CardEmbeddings from train/card_embeddings.json (lazy).
+
+    Falls back to an empty (all-zero) table when the file is absent or
+    unreadable, so feature extraction degrades instead of crashing.
+    """
+    global _shared_embeddings
+    if _shared_embeddings is None:
+        try:
+            _shared_embeddings = CardEmbeddings.load()
+        except (OSError, ValueError, KeyError):
+            _shared_embeddings = CardEmbeddings.empty()
+    return _shared_embeddings
