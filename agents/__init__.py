@@ -4,6 +4,8 @@ SOT-1672 layers [3]+[4]) plus Random/Greedy baselines.
 - observation.py : [1] Observation Adapter (raw obs dict -> information-set View)
 - actions.py     : [2] Action Enumerator (obs.select is the single source of truth)
 - planner.py     : [3] Determinized MCTS planner (engine search API, anytime)
+- turn_solver.py : [3b] gain-loss greedy turn sequencer — mctsS macro
+                   actions (SOT-1677, arXiv:1808.04794 §III-B3)
 - evaluator.py   : [4] leaf value interface + heuristic implementation
 - random_agent.py / greedy_agent.py / mcts_agent.py : policies
 - rng.py         : single externally-seeded RNG (no global random)
