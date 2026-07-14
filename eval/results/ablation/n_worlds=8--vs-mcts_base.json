@@ -1,0 +1,128 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "mcts",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 8,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "config_b": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "shards": [
+  {
+   "seed": 8316100,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 8316101,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 8316102,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 8316103,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 8316104,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 8316105,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 8316106,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 8316107,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 8316108,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 8316109,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 47,
+ "wins_b": 53,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3352,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 640.962690114975,
+ "winrate_a_excl_draws": 0.47,
+ "wilson95_excl_draws": [
+  0.3751081795934127,
+  0.5671114302990063
+ ],
+ "winrate_a_draws_half": 0.47,
+ "cell": {
+  "axis": "n_worlds",
+  "config": "n_worlds=8",
+  "overrides": {
+   "n_worlds": 8
+  },
+  "opponent": "mcts_base",
+  "base_seed": 8316100,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'n_worlds=8' --only-opponent mcts_base --force"
+ }
+}

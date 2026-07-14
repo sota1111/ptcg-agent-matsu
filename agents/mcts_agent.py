@@ -23,7 +23,7 @@ import time
 
 from .base import BaseAgent
 from .cards import shared_index
-from .evaluator import make_evaluator
+from .evaluator import HeuristicEvaluator, make_evaluator
 from .greedy_agent import GreedyAgent
 from .observation import View
 from .planner import MctsPlanner, PlannerConfig
@@ -36,6 +36,12 @@ class MctsAgent(BaseAgent):
                  evaluator=None, backend=None, clock=time.perf_counter,
                  **config_overrides):
         super().__init__(seed, deck)
+        # `eval_weights` rides in the JSON config overrides (SOT-1673
+        # ablation: bench.py --config-a can only pass constructor kwargs)
+        # and overrides HeuristicEvaluator feature weights.
+        eval_weights = config_overrides.pop("eval_weights", None)
+        if eval_weights and evaluator is None:
+            evaluator = HeuristicEvaluator(weights=eval_weights)
         self.config = config or PlannerConfig(**config_overrides)
         # Resolve the card master eagerly: the lazy singleton load would
         # otherwise land inside the first TIMED decision (budget criterion).
