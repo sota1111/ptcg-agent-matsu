@@ -52,6 +52,7 @@ from .evaluator import HeuristicEvaluator
 from .greedy_agent import (GreedyAgent, _COST_CONTEXTS, _COUNT_MAX_CONTEXTS,
                            _YES_CONTEXTS)
 from .observation import View, adapt
+from .turn_solver import TurnSolver
 
 # --- OptionType tiers for the lightweight rollout policy ---------------------
 # Mirrors cg/api.py:120-187 (values as plain ints, unknown values -> default).
@@ -107,6 +108,13 @@ class PlannerConfig:
     # None (default) keeps rollouts governed by rollout_depth/rollout_turns
     # alone — existing behavior unchanged.
     rollout_cutoff: dict | None = None
+    # mctsS (SOT-1677, arXiv:1808.04794 §III-B3): when True, every tree
+    # expansion becomes a macro action — the edge's action is stepped and
+    # the gain-loss greedy TurnSolver then completes the acting player's
+    # turn, so one tree level spans one turn. False keeps the existing
+    # one-select-per-edge behavior exactly.
+    solver: bool = False
+    solver_max_evals: int = 64   # option-evaluation cap per solver run
 
 
 @dataclass
@@ -334,6 +342,7 @@ class MctsPlanner:
         self._card_index = card_index
         self._clock = clock
         self._greedy = GreedyAgent(seed=0, card_index=card_index)
+        self._solver = None
         self.degraded_count = 0   # decisions answered by the greedy prior
         self.rollout_cutoffs = 0  # rollouts ended by the Early Cutoff rule
         self.last_stats = {}
@@ -349,6 +358,13 @@ class MctsPlanner:
         if self._card_index is None:
             self._card_index = self._greedy.cards
         return self._card_index
+
+    @property
+    def solver(self) -> TurnSolver:
+        if self._solver is None:
+            self._solver = TurnSolver(self.cards,
+                                      max_evals=self.config.solver_max_evals)
+        return self._solver
 
     # ---- public API -----------------------------------------------------
 
@@ -464,7 +480,8 @@ class MctsPlanner:
             edge = self._select_edge(node, root_player)
             path.append(edge)
             if edge[1] is None:
-                child = self._expand(node, edge[0], root_player, rng)
+                child = self._expand(node, edge[0], root_player, rng,
+                                     deadline)
                 edge[1] = child
                 value = (child.terminal if child.terminal is not None
                          else self._rollout(child, root_player, rng, deadline))
@@ -491,9 +508,18 @@ class MctsPlanner:
                 best, best_key = e, key
         return best
 
-    def _expand(self, node, action, root_player, rng):
+    def _expand(self, node, action, root_player, rng, deadline=None):
         sid, obs = self.backend.step(node.sid, action)
         sid, obs = self._resolve_chance(sid, obs, rng)
+        if self.config.solver:
+            # mctsS macro action (SOT-1677): the gain-loss TurnSolver
+            # completes the acting player's turn, so this edge spans one
+            # turn instead of one select. Anytime: the solver stops at the
+            # deadline / eval cap and the node is built wherever it stopped.
+            res = self.solver.solve(self.backend, sid, obs, rng,
+                                    deadline=deadline, clock=self._clock,
+                                    release_initial=True)
+            sid, obs = self._resolve_chance(res.sid, res.obs, rng)
         child = _Node(sid, obs, root_player)
         if child.terminal is None:
             cands, priors = self._node_candidates(child.obs, rng)
