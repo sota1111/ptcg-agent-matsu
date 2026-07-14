@@ -122,6 +122,19 @@ def submit_cell(config_name, overrides, opp_name, opp_config, args, pool):
         if n_k == 0:
             return None
         out = os.path.join(shard_dir, f"shard_{k}.json")
+        # Shard-level resume: an interrupted sweep keeps its finished
+        # shards, so rerunning the sweep redoes only the missing shards of
+        # incomplete cells. bench.py's write is not atomic — validate the
+        # JSON and rerun the shard if the file was truncated by a kill, or
+        # if it holds a different match count (e.g. a smoke-test leftover).
+        if os.path.exists(out) and not args.force:
+            try:
+                with open(out) as f:
+                    if json.load(f).get("n_matches") == n_k:
+                        return out
+            except (json.JSONDecodeError, OSError):
+                pass
+            os.remove(out)
         cmd = [sys.executable, os.path.join(REPO, "eval", "bench.py"),
                "--agent-a", "mcts", "--agent-b", agent_b,
                "--n", str(n_k), "--seed", str(base + k),

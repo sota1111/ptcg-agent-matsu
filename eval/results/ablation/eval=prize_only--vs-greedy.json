@@ -1,0 +1,133 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "greedy",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "eval_weights": {
+   "pokemon": 0.0,
+   "energy": 0.0,
+   "hp": 0.0,
+   "hand": 0.0,
+   "deck_empty": 0.0
+  }
+ },
+ "config_b": {},
+ "shards": [
+  {
+   "seed": 5865000,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 5865001,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 5865002,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 5865003,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 5865004,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 5865005,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 5865006,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 5865007,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 5865008,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 5865009,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 60,
+ "wins_b": 40,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3452,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 641.2212590221316,
+ "winrate_a_excl_draws": 0.6,
+ "wilson95_excl_draws": [
+  0.5020025867910618,
+  0.6905987135675411
+ ],
+ "winrate_a_draws_half": 0.6,
+ "cell": {
+  "axis": "eval_weights",
+  "config": "eval=prize_only",
+  "overrides": {
+   "eval_weights": {
+    "pokemon": 0.0,
+    "energy": 0.0,
+    "hp": 0.0,
+    "hand": 0.0,
+    "deck_empty": 0.0
+   }
+  },
+  "opponent": "greedy",
+  "base_seed": 5865000,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'eval=prize_only' --only-opponent greedy --force"
+ }
+}

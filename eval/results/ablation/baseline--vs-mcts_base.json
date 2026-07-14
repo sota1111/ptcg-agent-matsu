@@ -1,0 +1,126 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "mcts",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "config_b": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "shards": [
+  {
+   "seed": 4780000,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 4780001,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 4780002,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 4780003,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 4780004,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 4780005,
+   "n_matches": 10,
+   "wins_a": 9,
+   "wins_b": 1,
+   "draws": 0
+  },
+  {
+   "seed": 4780006,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 4780007,
+   "n_matches": 10,
+   "wins_a": 3,
+   "wins_b": 7,
+   "draws": 0
+  },
+  {
+   "seed": 4780008,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 4780009,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 53,
+ "wins_b": 47,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3567,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 640.7834531273693,
+ "winrate_a_excl_draws": 0.53,
+ "wilson95_excl_draws": [
+  0.4328885697009936,
+  0.6248918204065872
+ ],
+ "winrate_a_draws_half": 0.53,
+ "cell": {
+  "axis": "baseline",
+  "config": "baseline",
+  "overrides": {},
+  "opponent": "mcts_base",
+  "base_seed": 4780000,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'baseline' --only-opponent mcts_base --force"
+ }
+}

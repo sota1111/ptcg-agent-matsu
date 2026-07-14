@@ -1,0 +1,129 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "mcts",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "uct_c": 2.8
+ },
+ "config_b": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "shards": [
+  {
+   "seed": 6459300,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6459301,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 6459302,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6459303,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 6459304,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6459305,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6459306,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6459307,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 6459308,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 6459309,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 56,
+ "wins_b": 44,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3163,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 648.1813970021904,
+ "winrate_a_excl_draws": 0.56,
+ "wilson95_excl_draws": [
+  0.4622810465167699,
+  0.6532797336983921
+ ],
+ "winrate_a_draws_half": 0.56,
+ "cell": {
+  "axis": "uct_c",
+  "config": "uct_c=2.8",
+  "overrides": {
+   "uct_c": 2.8
+  },
+  "opponent": "mcts_base",
+  "base_seed": 6459300,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'uct_c=2.8' --only-opponent mcts_base --force"
+ }
+}

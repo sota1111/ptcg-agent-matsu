@@ -1,0 +1,121 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "greedy",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "rollout": "heuristic"
+ },
+ "config_b": {},
+ "shards": [
+  {
+   "seed": 218800,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 218801,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 218802,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 218803,
+   "n_matches": 10,
+   "wins_a": 7,
+   "wins_b": 3,
+   "draws": 0
+  },
+  {
+   "seed": 218804,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 218805,
+   "n_matches": 10,
+   "wins_a": 9,
+   "wins_b": 1,
+   "draws": 0
+  },
+  {
+   "seed": 218806,
+   "n_matches": 10,
+   "wins_a": 5,
+   "wins_b": 5,
+   "draws": 0
+  },
+  {
+   "seed": 218807,
+   "n_matches": 10,
+   "wins_a": 6,
+   "wins_b": 4,
+   "draws": 0
+  },
+  {
+   "seed": 218808,
+   "n_matches": 10,
+   "wins_a": 4,
+   "wins_b": 6,
+   "draws": 0
+  },
+  {
+   "seed": 218809,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 64,
+ "wins_b": 36,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3647,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 642.7839968819171,
+ "winrate_a_excl_draws": 0.64,
+ "wilson95_excl_draws": [
+  0.5423540245160874,
+  0.7272877959859567
+ ],
+ "winrate_a_draws_half": 0.64,
+ "cell": {
+  "axis": "rollout",
+  "config": "rollout=heuristic",
+  "overrides": {
+   "rollout": "heuristic"
+  },
+  "opponent": "greedy",
+  "base_seed": 218800,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'rollout=heuristic' --only-opponent greedy --force"
+ }
+}

@@ -1,0 +1,131 @@
+{
+ "agent_a": "mcts",
+ "agent_b": "random",
+ "deck": "deck.csv",
+ "config_a": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "eval_weights": {
+   "pokemon": 0.6,
+   "energy": 0.4,
+   "hp": 0.008,
+   "hand": 0.12
+  }
+ },
+ "config_b": {},
+ "shards": [
+  {
+   "seed": 4269200,
+   "n_matches": 10,
+   "wins_a": 10,
+   "wins_b": 0,
+   "draws": 0
+  },
+  {
+   "seed": 4269201,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 4269202,
+   "n_matches": 10,
+   "wins_a": 10,
+   "wins_b": 0,
+   "draws": 0
+  },
+  {
+   "seed": 4269203,
+   "n_matches": 10,
+   "wins_a": 9,
+   "wins_b": 1,
+   "draws": 0
+  },
+  {
+   "seed": 4269204,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 4269205,
+   "n_matches": 10,
+   "wins_a": 9,
+   "wins_b": 1,
+   "draws": 0
+  },
+  {
+   "seed": 4269206,
+   "n_matches": 10,
+   "wins_a": 8,
+   "wins_b": 2,
+   "draws": 0
+  },
+  {
+   "seed": 4269207,
+   "n_matches": 10,
+   "wins_a": 10,
+   "wins_b": 0,
+   "draws": 0
+  },
+  {
+   "seed": 4269208,
+   "n_matches": 10,
+   "wins_a": 10,
+   "wins_b": 0,
+   "draws": 0
+  },
+  {
+   "seed": 4269209,
+   "n_matches": 10,
+   "wins_a": 10,
+   "wins_b": 0,
+   "draws": 0
+  }
+ ],
+ "n_matches": 100,
+ "wins_a": 92,
+ "wins_b": 8,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "fallbacks_a": 0,
+ "fallbacks_b": 0,
+ "decisions": 3182,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "planner_move_max_ms": 640.8601219300181,
+ "winrate_a_excl_draws": 0.92,
+ "wilson95_excl_draws": [
+  0.8500189229905127,
+  0.9589065385156194
+ ],
+ "winrate_a_draws_half": 0.92,
+ "cell": {
+  "axis": "eval_weights",
+  "config": "eval=material2x",
+  "overrides": {
+   "eval_weights": {
+    "pokemon": 0.6,
+    "energy": 0.4,
+    "hp": 0.008,
+    "hand": 0.12
+   }
+  },
+  "opponent": "random",
+  "base_seed": 4269200,
+  "repro": "venv/bin/python eval/ablation.py --n 100 --shards 10 --seed 94000 --only-config 'eval=material2x' --only-opponent random --force"
+ }
+}
