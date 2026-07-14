@@ -1,0 +1,26 @@
+{
+ "wins_a": 152,
+ "wins_b": 168,
+ "draws": 0,
+ "unfinished": 0,
+ "rejects": 0,
+ "exceptions": 0,
+ "budget_violations_a": 0,
+ "budget_violations_b": 0,
+ "planner_fallbacks_a": 0,
+ "planner_fallbacks_b": 0,
+ "degraded_count_a": 0,
+ "degraded_count_b": 0,
+ "n_matches": 320,
+ "decisions": 11808,
+ "winrate_a_excl_draws": 0.475,
+ "wilson95_excl_draws": [
+  0.4209070898916483,
+  0.5296860180499172
+ ],
+ "planner_move_max_ms": 640.8138030674309,
+ "agent_a": "mcts (solver=true, mctsS)",
+ "agent_b": "mcts (baseline)",
+ "shards": 20,
+ "seeds": "981-989, 9810-9820"
+}
