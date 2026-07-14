@@ -18,6 +18,14 @@ agents/features.py vectors, trained on self-play logs
 (train/gen_selfplay.py + train/train_value.py) and loaded from a JSON
 weight file. Select it per agent with the string spec
 `evaluator="learned"` (bench: --config-a '{"evaluator": "learned"}').
+
+SOT-1679 extends the same class to MLP value networks (arXiv:1808.04794
+§IV-B: tanh hidden layers + a sigmoid win-probability output, pure-Python
+forward pass): a model file with a "layers" list is an MLP, one with a flat
+"weights" list stays the SOT-1674 logistic model. The spec
+`evaluator="value_net"` loads the cheater-selfplay-trained network from
+train/value_net.json (paired with the planner's rollout_cutoff, this is the
+paper's mctsV variant).
 """
 import json
 import math
@@ -99,6 +107,9 @@ class HeuristicEvaluator(Evaluator):
 DEFAULT_MODEL_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "train", "value_model.json")
+DEFAULT_NET_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "train", "value_net.json")
 
 
 class LearnedEvaluator(Evaluator):
@@ -130,11 +141,29 @@ class LearnedEvaluator(Evaluator):
                 f"value model feature set {feature_set!r} does not match "
                 f"agents/features.py (model has {len(names)}, code has "
                 f"{len(expected_names)}); re-run train/train_value.py")
-        self.weights = [float(x) for x in model["weights"]]
-        self.bias = float(model.get("bias", 0.0))
         self.mean = [float(x) for x in model.get("mean", [0.0] * len(names))]
         self.std = [float(x) or 1.0
                     for x in model.get("std", [1.0] * len(names))]
+        # "layers" -> MLP (SOT-1679): [{"w": [[fan_in floats] per neuron],
+        # "b": [floats]}, ...]; tanh hidden activations, the last layer is a
+        # single logit squashed by sigmoid. Absent -> SOT-1674 logistic model.
+        self.layers = None
+        if "layers" in model:
+            self.layers = [([[float(v) for v in row] for row in layer["w"]],
+                            [float(v) for v in layer["b"]])
+                           for layer in model["layers"]]
+            fan_in = len(names)
+            for w, b in self.layers:
+                if len(w) != len(b) or any(len(row) != fan_in for row in w):
+                    raise ValueError("value net layer shapes are inconsistent "
+                                     "with the feature set; re-run "
+                                     "train/train_value.py")
+                fan_in = len(w)
+            if len(self.layers[-1][0]) != 1:
+                raise ValueError("value net must end in a single output logit")
+        else:
+            self.weights = [float(x) for x in model["weights"]]
+            self.bias = float(model.get("bias", 0.0))
 
     def evaluate(self, obs, root_player: int) -> float:
         current = getattr(obs, "current", None)
@@ -148,9 +177,17 @@ class LearnedEvaluator(Evaluator):
                 return 0.0
             return 0.5  # draw (result == 2) or unknown future value
         x = self._featurize(obs, root_player, self._card_index)
-        z = self.bias
-        for xi, mi, si, wi in zip(x, self.mean, self.std, self.weights):
-            z += wi * (xi - mi) / si
+        if self.layers is not None:
+            h = [(xi - mi) / si for xi, mi, si in zip(x, self.mean, self.std)]
+            for w, b in self.layers[:-1]:
+                h = [math.tanh(bj + sum(wj * hj for wj, hj in zip(row, h)))
+                     for row, bj in zip(w, b)]
+            w, b = self.layers[-1]
+            z = b[0] + sum(wj * hj for wj, hj in zip(w[0], h))
+        else:
+            z = self.bias
+            for xi, mi, si, wi in zip(x, self.mean, self.std, self.weights):
+                z += wi * (xi - mi) / si
         if z >= 0:
             return 1.0 / (1.0 + math.exp(-z))
         e = math.exp(z)
@@ -159,12 +196,16 @@ class LearnedEvaluator(Evaluator):
 
 def make_evaluator(spec, card_index=None) -> Evaluator:
     """Resolve an evaluator spec: an Evaluator instance passes through;
-    "heuristic" / "learned" build the corresponding implementation (this is
-    what lets eval/bench.py switch value functions from --config JSON)."""
+    "heuristic" / "learned" / "value_net" build the corresponding
+    implementation (this is what lets eval/bench.py switch value functions
+    from --config JSON)."""
     if isinstance(spec, Evaluator):
         return spec
     if spec in (None, "heuristic"):
         return HeuristicEvaluator()
     if spec == "learned":
         return LearnedEvaluator(card_index=card_index)
+    if spec == "value_net":
+        return LearnedEvaluator(model_path=DEFAULT_NET_PATH,
+                                card_index=card_index)
     raise ValueError(f"unknown evaluator spec: {spec!r}")

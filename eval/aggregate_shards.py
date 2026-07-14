@@ -19,6 +19,7 @@ SUMMED = (
     "budget_violations_a", "budget_violations_b",
     "planner_fallbacks_a", "planner_fallbacks_b",
     "degraded_count_a", "degraded_count_b",
+    "rollout_cutoffs_a", "rollout_cutoffs_b",
 )
 
 
