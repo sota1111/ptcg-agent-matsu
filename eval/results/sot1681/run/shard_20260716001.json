@@ -1,0 +1,183 @@
+{
+  "issue": "SOT-1681",
+  "n_per_pairing": 8,
+  "deck_selection": {
+    "mode": "mirror",
+    "random": true,
+    "pool_size": 25,
+    "pool": [
+      "01_dragapult.csv",
+      "02_raging_bolt_ogerpon.csv",
+      "03_dragapult_blaziken.csv",
+      "04_dragapult_dusknoir.csv",
+      "05_dragapult_dudunsparce.csv",
+      "06_hydrapple.csv",
+      "07_n_s_zoroark_n.csv",
+      "08_ogerpon_box.csv",
+      "09_slowking.csv",
+      "10_hop_s_trevenant.csv",
+      "11_lillie_s_clefairy.csv",
+      "12_alakazam_dudunsparce.csv",
+      "13_festival_lead.csv",
+      "14_mega_lucario_ex.csv",
+      "15_marnie_s_grimmsnarl_ex.csv",
+      "16_crustle_mysterious_rock_inn.csv",
+      "17_rocket_s_mewtwo_ex.csv",
+      "18_rocket_s_honchkrow.csv",
+      "19_ethan_s_typhlosion.csv",
+      "20_cynthia_s_garchomp_ex.csv",
+      "21_lillie_s_clefairy_ex_naic_champion.csv",
+      "22_dragapult_ex_naic_2nd.csv",
+      "23_slowking_naic_4th.csv",
+      "24_n_s_zoroark_ex_naic_10th.csv",
+      "25_mega_lopunny_ex.csv"
+    ],
+    "seed": 20260716001,
+    "planner_deck_sync": true
+  },
+  "contestants": [
+    {
+      "label": "matsu",
+      "kanji": "松",
+      "repo": "ptcg-agent-matsu"
+    },
+    {
+      "label": "take",
+      "kanji": "竹",
+      "repo": "ptcg-agent-take"
+    },
+    {
+      "label": "ume",
+      "kanji": "梅",
+      "repo": "ptcg-agent-ume"
+    }
+  ],
+  "pairings": [
+    {
+      "a": "matsu",
+      "b": "take",
+      "n": 8,
+      "decided": 8,
+      "a_wins": 7,
+      "b_wins": 1,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.875,
+      "a_win_rate_ci95": [
+        0.5291,
+        0.9776
+      ],
+      "faults": {
+        "matsu": 0,
+        "take": 0
+      },
+      "first_player_win_rate": 0.125,
+      "mean_steps": 183.5,
+      "first_decided": 8,
+      "first_wins": 1,
+      "steps_total": 1468
+    },
+    {
+      "a": "matsu",
+      "b": "ume",
+      "n": 8,
+      "decided": 8,
+      "a_wins": 7,
+      "b_wins": 1,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.875,
+      "a_win_rate_ci95": [
+        0.5291,
+        0.9776
+      ],
+      "faults": {
+        "matsu": 0,
+        "ume": 0
+      },
+      "first_player_win_rate": 0.875,
+      "mean_steps": 151.2,
+      "first_decided": 8,
+      "first_wins": 7,
+      "steps_total": 1210
+    },
+    {
+      "a": "take",
+      "b": "ume",
+      "n": 8,
+      "decided": 8,
+      "a_wins": 5,
+      "b_wins": 3,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.625,
+      "a_win_rate_ci95": [
+        0.3057,
+        0.8632
+      ],
+      "faults": {
+        "take": 0,
+        "ume": 0
+      },
+      "first_player_win_rate": 0.375,
+      "mean_steps": 181.4,
+      "first_decided": 8,
+      "first_wins": 3,
+      "steps_total": 1451
+    }
+  ],
+  "standings": [
+    {
+      "contestant": "matsu",
+      "wins": 14,
+      "losses": 2,
+      "decided": 16,
+      "win_rate": 0.875,
+      "win_rate_ci95": [
+        0.6398,
+        0.965
+      ]
+    },
+    {
+      "contestant": "take",
+      "wins": 6,
+      "losses": 10,
+      "decided": 16,
+      "win_rate": 0.375,
+      "win_rate_ci95": [
+        0.1848,
+        0.6136
+      ]
+    },
+    {
+      "contestant": "ume",
+      "wins": 4,
+      "losses": 12,
+      "decided": 16,
+      "win_rate": 0.25,
+      "win_rate_ci95": [
+        0.1018,
+        0.495
+      ]
+    }
+  ],
+  "note": "engine has no seed API; results are statistical (Wilson CI), not bit-reproducible",
+  "deck_usage": {
+    "matsu vs take": {
+      "01_dragapult.csv": 4,
+      "12_alakazam_dudunsparce.csv": 4,
+      "15_marnie_s_grimmsnarl_ex.csv": 4,
+      "20_cynthia_s_garchomp_ex.csv": 4
+    },
+    "matsu vs ume": {
+      "03_dragapult_blaziken.csv": 4,
+      "05_dragapult_dudunsparce.csv": 4,
+      "16_crustle_mysterious_rock_inn.csv": 4,
+      "17_rocket_s_mewtwo_ex.csv": 4
+    },
+    "take vs ume": {
+      "13_festival_lead.csv": 4,
+      "18_rocket_s_honchkrow.csv": 12
+    }
+  }
+}
