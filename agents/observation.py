@@ -171,6 +171,129 @@ def _adapt_select(sel) -> SelectView | None:
     )
 
 
+# --------------------------------------------------------------------------- #
+# Fast path: build the View straight from the engine's dataclass Observation
+# (agents.planner rollout hot loop, SOT-1697). The rollout used to convert the
+# whole search-API observation back to a raw dict with dataclasses.asdict()
+# just so GreedyAgent could score it; profiling showed that recursive asdict()
+# round-trip was ~40% of a champion decision. These helpers mirror the dict
+# adapters above field-for-field but read dataclass attributes directly, so the
+# resulting View is identical (tests/test_observation.py asserts equality with
+# the asdict path) while skipping the deep dict rebuild.
+# --------------------------------------------------------------------------- #
+def _obj_card_id(card) -> int | None:
+    """Card ID from an engine Card dataclass; None for facedown/absent cards."""
+    return getattr(card, "id", None) if card is not None else None
+
+
+def _adapt_pokemon_obj(p) -> PokemonView | None:
+    if p is None:
+        return None  # facedown Pokémon are reported as None
+    return PokemonView(
+        card_id=getattr(p, "id", None),
+        serial=getattr(p, "serial", None),
+        hp=getattr(p, "hp", 0) or 0,
+        max_hp=getattr(p, "maxHp", 0) or 0,
+        appear_this_turn=bool(getattr(p, "appearThisTurn", False)),
+        energies=list(getattr(p, "energies", None) or ()),
+        energy_card_ids=[_obj_card_id(c)
+                         for c in (getattr(p, "energyCards", None) or ())],
+        tool_ids=[_obj_card_id(c) for c in (getattr(p, "tools", None) or ())],
+        pre_evolution_ids=[_obj_card_id(c)
+                           for c in (getattr(p, "preEvolution", None) or ())],
+    )
+
+
+def _adapt_side_obj(p) -> SideView:
+    hand = getattr(p, "hand", None)
+    prize = getattr(p, "prize", None) or ()
+    return SideView(
+        active=[_adapt_pokemon_obj(x) for x in (getattr(p, "active", None) or ())],
+        bench=[pv for pv in (_adapt_pokemon_obj(x)
+                             for x in (getattr(p, "bench", None) or ()))
+               if pv is not None],
+        bench_max=getattr(p, "benchMax", 0) or 0,
+        deck_count=getattr(p, "deckCount", 0) or 0,
+        hand_count=getattr(p, "handCount", 0) or 0,
+        hand_card_ids=None if hand is None else [_obj_card_id(c) for c in hand],
+        discard_card_ids=[_obj_card_id(c)
+                          for c in (getattr(p, "discard", None) or ())],
+        prize_count=len(prize),
+        prize_known_ids=[_obj_card_id(c) for c in prize if c is not None],
+        poisoned=bool(getattr(p, "poisoned", False)),
+        burned=bool(getattr(p, "burned", False)),
+        asleep=bool(getattr(p, "asleep", False)),
+        paralyzed=bool(getattr(p, "paralyzed", False)),
+        confused=bool(getattr(p, "confused", False)),
+    )
+
+
+def _adapt_select_obj(sel) -> SelectView | None:
+    if sel is None:
+        return None
+    deck = getattr(sel, "deck", None)
+    options = getattr(sel, "option", None) or ()
+    return SelectView(
+        type=getattr(sel, "type", -1),
+        context=getattr(sel, "context", -1),
+        min_count=getattr(sel, "minCount", 0) or 0,
+        max_count=getattr(sel, "maxCount", 0) or 0,
+        remain_damage_counter=getattr(sel, "remainDamageCounter", 0) or 0,
+        remain_energy_cost=getattr(sel, "remainEnergyCost", 0) or 0,
+        # OptionView.raw exposes the option's scalar fields (attackId, area,
+        # index, ...) via .get(); an engine Option is a flat dataclass, so its
+        # __dict__ is exactly the dict GreedyAgent read from the asdict path.
+        options=[OptionView(index=i,
+                            type=getattr(o, "type", -1),
+                            raw=vars(o) if hasattr(o, "__dict__") else {})
+                 for i, o in enumerate(options)],
+        deck_card_ids=None if deck is None else [_obj_card_id(c) for c in deck],
+        context_card_id=_obj_card_id(getattr(sel, "contextCard", None)),
+        effect_card_id=_obj_card_id(getattr(sel, "effect", None)),
+        raw={},
+    )
+
+
+def adapt_engine_obs(obs) -> View:
+    """Engine dataclass Observation -> `View` (rollout fast path, SOT-1697).
+
+    Equivalent to ``adapt({"select": asdict(sel), "current": asdict(current)})``
+    but without the recursive dict rebuild. ``obs`` is the search-API
+    ``Observation`` dataclass (``obs.select``, ``obs.current``).
+    """
+    current = getattr(obs, "current", None)
+    players = (getattr(current, "players", None) or ()) if current is not None else ()
+    your_index = getattr(current, "yourIndex", 0) if current is not None else 0
+    if not isinstance(your_index, int) or your_index not in (0, 1):
+        your_index = 0
+    sides = [_adapt_side_obj(players[i]) if i < len(players) else _adapt_side({})
+             for i in (your_index, 1 - your_index)]
+    looking = getattr(current, "looking", None) if current is not None else None
+    result = getattr(current, "result", -1) if current is not None else -1
+    return View(
+        your_index=your_index,
+        turn=(getattr(current, "turn", 0) or 0) if current is not None else 0,
+        turn_action_count=(getattr(current, "turnActionCount", 0) or 0)
+        if current is not None else 0,
+        first_player=getattr(current, "firstPlayer", -1) if current is not None else -1,
+        result=result if result is not None else -1,
+        supporter_played=bool(getattr(current, "supporterPlayed", False)),
+        stadium_played=bool(getattr(current, "stadiumPlayed", False)),
+        energy_attached=bool(getattr(current, "energyAttached", False)),
+        retreated=bool(getattr(current, "retreated", False)),
+        stadium_card_ids=[_obj_card_id(c)
+                          for c in ((getattr(current, "stadium", None) or ())
+                                    if current is not None else ())],
+        looking_card_ids=(None if looking is None
+                          else [_obj_card_id(c) for c in looking]),
+        me=sides[0],
+        opp=sides[1],
+        select=_adapt_select_obj(getattr(obs, "select", None)),
+        logs=list(getattr(obs, "logs", None) or ()),
+        raw=obs,
+    )
+
+
 def adapt(obs_dict: dict) -> View:
     """Raw observation dict -> information-set `View` for the acting player."""
     obs = obs_dict if isinstance(obs_dict, dict) else {}

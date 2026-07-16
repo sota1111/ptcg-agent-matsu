@@ -1,7 +1,21 @@
 import unittest
+from types import SimpleNamespace
 
-from agents.observation import adapt
-from tests.support import card, observation, player, pokemon, select
+from agents.greedy_agent import GreedyAgent
+from agents.observation import adapt, adapt_engine_obs
+from tests.support import (card, observation, player, pokemon, select,
+                           synthetic_card_index)
+
+
+def _to_ns(value):
+    """Recursively mirror a raw observation dict as attribute-access objects,
+    the shape the engine's dataclass Observation presents. Lets us exercise the
+    dataclass fast path (adapt_engine_obs) without importing the engine."""
+    if isinstance(value, dict):
+        return SimpleNamespace(**{k: _to_ns(v) for k, v in value.items()})
+    if isinstance(value, list):
+        return [_to_ns(v) for v in value]
+    return value
 
 
 class TestObservationAdapter(unittest.TestCase):
@@ -60,6 +74,66 @@ class TestObservationAdapter(unittest.TestCase):
         self.assertEqual(view.find_pokemon(1, 4, 0).hp, 40)        # opp active
         self.assertIsNone(view.find_pokemon(0, 4, 5))              # bad index
         self.assertIsNone(view.find_pokemon(0, 99, 0))             # bad area
+
+
+class TestAdaptEngineObs(unittest.TestCase):
+    """adapt_engine_obs (SOT-1697 rollout fast path) must be behavior-identical
+    to adapt() on the asdict round-trip: same View structure, same greedy pick."""
+
+    def _obs(self):
+        me = player(hand=[card(101), card(103)], deck_count=30,
+                    active=[pokemon(101, hp=90)], bench=[pokemon(102, hp=40)],
+                    discard=[card(102)])
+        opp = player(hand=None, deck_count=40, active=[pokemon(102, hp=30)],
+                     bench=[], prize=4)
+        options = [
+            {"type": 13, "attackId": 201, "area": 4, "index": 0,
+             "playerIndex": 0},                              # ATTACK
+            {"type": 7, "index": 0},                          # PLAY
+            {"type": 8, "inPlayArea": 4},                     # ATTACH active
+            {"type": 14},                                     # END
+        ]
+        return observation(select(options, context=1, min_count=1,
+                                  max_count=1), me=me, opp=opp)
+
+    def test_structure_matches_dict_adapter(self):
+        obs = self._obs()
+        v1 = adapt(obs)
+        v2 = adapt_engine_obs(_to_ns(obs))
+        self.assertEqual(v1.your_index, v2.your_index)
+        self.assertEqual(v1.turn, v2.turn)
+        self.assertEqual(v1.me, v2.me)      # dataclass deep equality
+        self.assertEqual(v1.opp, v2.opp)
+        self.assertEqual(v1.stadium_card_ids, v2.stadium_card_ids)
+        self.assertEqual(v1.select.context, v2.select.context)
+        self.assertEqual(v1.select.min_count, v2.select.min_count)
+        self.assertEqual(v1.select.max_count, v2.select.max_count)
+        self.assertEqual(v1.select.deck_card_ids, v2.select.deck_card_ids)
+        self.assertEqual(v1.select.options, v2.select.options)  # incl. .raw
+
+    def test_greedy_choice_identical(self):
+        greedy = GreedyAgent(seed=0, card_index=synthetic_card_index())
+        obs = self._obs()
+        v1, v2 = adapt(obs), adapt_engine_obs(_to_ns(obs))
+        self.assertEqual(greedy.choose(v1), greedy.choose(v2))
+        self.assertEqual(greedy.score_options(v1), greedy.score_options(v2))
+
+    def test_facedown_and_hidden_zones(self):
+        obs = observation(select([{"type": 14}]),
+                          me=player(active=[pokemon(101)], prize=6),
+                          opp=player(active=[None], hand=None, bench=[]))
+        v1, v2 = adapt(obs), adapt_engine_obs(_to_ns(obs))
+        self.assertEqual(v2.opp.active, [None])       # facedown -> None
+        self.assertIsNone(v2.opp.hand_card_ids)       # opponent hand hidden
+        self.assertEqual(v1.me.prize_count, v2.me.prize_count)
+        self.assertEqual(v1.opp, v2.opp)
+
+    def test_initial_deck_selection_select_none(self):
+        obs = _to_ns({"select": None, "logs": [], "current": None})
+        view = adapt_engine_obs(obs)
+        self.assertIsNone(view.select)
+        self.assertEqual(view.result, -1)
+        self.assertEqual(view.me.deck_count, 0)
 
 
 if __name__ == "__main__":

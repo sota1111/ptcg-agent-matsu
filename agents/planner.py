@@ -45,13 +45,13 @@ All randomness flows through the per-decision `Rng` stream passed to
 """
 import math
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 
 from . import actions
 from .evaluator import HeuristicEvaluator
 from .greedy_agent import (GreedyAgent, _COST_CONTEXTS, _COUNT_MAX_CONTEXTS,
                            _YES_CONTEXTS)
-from .observation import View, adapt
+from .observation import View, adapt_engine_obs
 from .turn_solver import TurnSolver
 
 # --- OptionType tiers for the lightweight rollout policy ---------------------
@@ -624,13 +624,12 @@ class MctsPlanner:
             return sorted(rng.sample(range(n), rng.randint(lo, hi)))
         if self.config.rollout == "greedy":
             # Full-strength GreedyAgent for BOTH sides (deterministic; only
-            # coin outcomes above keep rollouts stochastic). asdict() maps
-            # the engine's dataclass observation back to the raw-dict shape
-            # the [1] Observation Adapter expects.
+            # coin outcomes above keep rollouts stochastic). adapt_engine_obs
+            # builds the [1] Observation Adapter View straight from the engine's
+            # dataclass observation — the old asdict() round-trip was ~40% of a
+            # champion decision (SOT-1697 profiling); this is behavior-identical.
             try:
-                view = adapt({"select": asdict(sel),
-                              "current": asdict(obs.current)})
-                return self._greedy.choose(view)
+                return self._greedy.choose(adapt_engine_obs(obs))
             except Exception:
                 pass  # non-dataclass double etc.: use the tier policy below
         scores = [self._tier_score(sel, opt, rng, obs) for opt in sel.option]
