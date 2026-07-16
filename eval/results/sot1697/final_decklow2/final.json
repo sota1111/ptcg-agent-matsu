@@ -1,0 +1,325 @@
+{
+ "issue": "SOT-1697",
+ "shards": [
+  "/tmp/agg_decklow2/shard_1.json",
+  "/tmp/agg_decklow2/shard_10.json",
+  "/tmp/agg_decklow2/shard_100.json",
+  "/tmp/agg_decklow2/shard_101.json",
+  "/tmp/agg_decklow2/shard_102.json",
+  "/tmp/agg_decklow2/shard_103.json",
+  "/tmp/agg_decklow2/shard_104.json",
+  "/tmp/agg_decklow2/shard_105.json",
+  "/tmp/agg_decklow2/shard_106.json",
+  "/tmp/agg_decklow2/shard_107.json",
+  "/tmp/agg_decklow2/shard_108.json",
+  "/tmp/agg_decklow2/shard_109.json",
+  "/tmp/agg_decklow2/shard_11.json",
+  "/tmp/agg_decklow2/shard_110.json",
+  "/tmp/agg_decklow2/shard_111.json",
+  "/tmp/agg_decklow2/shard_112.json",
+  "/tmp/agg_decklow2/shard_113.json",
+  "/tmp/agg_decklow2/shard_114.json",
+  "/tmp/agg_decklow2/shard_115.json",
+  "/tmp/agg_decklow2/shard_116.json",
+  "/tmp/agg_decklow2/shard_117.json",
+  "/tmp/agg_decklow2/shard_118.json",
+  "/tmp/agg_decklow2/shard_119.json",
+  "/tmp/agg_decklow2/shard_12.json",
+  "/tmp/agg_decklow2/shard_120.json",
+  "/tmp/agg_decklow2/shard_121.json",
+  "/tmp/agg_decklow2/shard_122.json",
+  "/tmp/agg_decklow2/shard_123.json",
+  "/tmp/agg_decklow2/shard_124.json",
+  "/tmp/agg_decklow2/shard_125.json",
+  "/tmp/agg_decklow2/shard_126.json",
+  "/tmp/agg_decklow2/shard_127.json",
+  "/tmp/agg_decklow2/shard_128.json",
+  "/tmp/agg_decklow2/shard_129.json",
+  "/tmp/agg_decklow2/shard_13.json",
+  "/tmp/agg_decklow2/shard_130.json",
+  "/tmp/agg_decklow2/shard_131.json",
+  "/tmp/agg_decklow2/shard_132.json",
+  "/tmp/agg_decklow2/shard_133.json",
+  "/tmp/agg_decklow2/shard_134.json",
+  "/tmp/agg_decklow2/shard_135.json",
+  "/tmp/agg_decklow2/shard_136.json",
+  "/tmp/agg_decklow2/shard_137.json",
+  "/tmp/agg_decklow2/shard_138.json",
+  "/tmp/agg_decklow2/shard_139.json",
+  "/tmp/agg_decklow2/shard_14.json",
+  "/tmp/agg_decklow2/shard_140.json",
+  "/tmp/agg_decklow2/shard_141.json",
+  "/tmp/agg_decklow2/shard_142.json",
+  "/tmp/agg_decklow2/shard_15.json",
+  "/tmp/agg_decklow2/shard_16.json",
+  "/tmp/agg_decklow2/shard_17.json",
+  "/tmp/agg_decklow2/shard_18.json",
+  "/tmp/agg_decklow2/shard_19.json",
+  "/tmp/agg_decklow2/shard_2.json",
+  "/tmp/agg_decklow2/shard_20.json",
+  "/tmp/agg_decklow2/shard_21.json",
+  "/tmp/agg_decklow2/shard_22.json",
+  "/tmp/agg_decklow2/shard_23.json",
+  "/tmp/agg_decklow2/shard_24.json",
+  "/tmp/agg_decklow2/shard_25.json",
+  "/tmp/agg_decklow2/shard_26.json",
+  "/tmp/agg_decklow2/shard_27.json",
+  "/tmp/agg_decklow2/shard_28.json",
+  "/tmp/agg_decklow2/shard_29.json",
+  "/tmp/agg_decklow2/shard_3.json",
+  "/tmp/agg_decklow2/shard_30.json",
+  "/tmp/agg_decklow2/shard_31.json",
+  "/tmp/agg_decklow2/shard_32.json",
+  "/tmp/agg_decklow2/shard_33.json",
+  "/tmp/agg_decklow2/shard_34.json",
+  "/tmp/agg_decklow2/shard_35.json",
+  "/tmp/agg_decklow2/shard_36.json",
+  "/tmp/agg_decklow2/shard_37.json",
+  "/tmp/agg_decklow2/shard_38.json",
+  "/tmp/agg_decklow2/shard_39.json",
+  "/tmp/agg_decklow2/shard_4.json",
+  "/tmp/agg_decklow2/shard_40.json",
+  "/tmp/agg_decklow2/shard_41.json",
+  "/tmp/agg_decklow2/shard_42.json",
+  "/tmp/agg_decklow2/shard_43.json",
+  "/tmp/agg_decklow2/shard_44.json",
+  "/tmp/agg_decklow2/shard_45.json",
+  "/tmp/agg_decklow2/shard_46.json",
+  "/tmp/agg_decklow2/shard_47.json",
+  "/tmp/agg_decklow2/shard_48.json",
+  "/tmp/agg_decklow2/shard_49.json",
+  "/tmp/agg_decklow2/shard_5.json",
+  "/tmp/agg_decklow2/shard_50.json",
+  "/tmp/agg_decklow2/shard_51.json",
+  "/tmp/agg_decklow2/shard_52.json",
+  "/tmp/agg_decklow2/shard_53.json",
+  "/tmp/agg_decklow2/shard_54.json",
+  "/tmp/agg_decklow2/shard_55.json",
+  "/tmp/agg_decklow2/shard_56.json",
+  "/tmp/agg_decklow2/shard_57.json",
+  "/tmp/agg_decklow2/shard_58.json",
+  "/tmp/agg_decklow2/shard_59.json",
+  "/tmp/agg_decklow2/shard_6.json",
+  "/tmp/agg_decklow2/shard_60.json",
+  "/tmp/agg_decklow2/shard_61.json",
+  "/tmp/agg_decklow2/shard_62.json",
+  "/tmp/agg_decklow2/shard_63.json",
+  "/tmp/agg_decklow2/shard_64.json",
+  "/tmp/agg_decklow2/shard_65.json",
+  "/tmp/agg_decklow2/shard_66.json",
+  "/tmp/agg_decklow2/shard_67.json",
+  "/tmp/agg_decklow2/shard_68.json",
+  "/tmp/agg_decklow2/shard_69.json",
+  "/tmp/agg_decklow2/shard_7.json",
+  "/tmp/agg_decklow2/shard_70.json",
+  "/tmp/agg_decklow2/shard_71.json",
+  "/tmp/agg_decklow2/shard_72.json",
+  "/tmp/agg_decklow2/shard_73.json",
+  "/tmp/agg_decklow2/shard_74.json",
+  "/tmp/agg_decklow2/shard_75.json",
+  "/tmp/agg_decklow2/shard_76.json",
+  "/tmp/agg_decklow2/shard_77.json",
+  "/tmp/agg_decklow2/shard_78.json",
+  "/tmp/agg_decklow2/shard_79.json",
+  "/tmp/agg_decklow2/shard_8.json",
+  "/tmp/agg_decklow2/shard_80.json",
+  "/tmp/agg_decklow2/shard_81.json",
+  "/tmp/agg_decklow2/shard_82.json",
+  "/tmp/agg_decklow2/shard_83.json",
+  "/tmp/agg_decklow2/shard_84.json",
+  "/tmp/agg_decklow2/shard_85.json",
+  "/tmp/agg_decklow2/shard_86.json",
+  "/tmp/agg_decklow2/shard_87.json",
+  "/tmp/agg_decklow2/shard_88.json",
+  "/tmp/agg_decklow2/shard_89.json",
+  "/tmp/agg_decklow2/shard_9.json",
+  "/tmp/agg_decklow2/shard_90.json",
+  "/tmp/agg_decklow2/shard_91.json",
+  "/tmp/agg_decklow2/shard_92.json",
+  "/tmp/agg_decklow2/shard_93.json",
+  "/tmp/agg_decklow2/shard_94.json",
+  "/tmp/agg_decklow2/shard_95.json",
+  "/tmp/agg_decklow2/shard_96.json",
+  "/tmp/agg_decklow2/shard_97.json",
+  "/tmp/agg_decklow2/shard_98.json",
+  "/tmp/agg_decklow2/shard_99.json"
+ ],
+ "candidate": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1,
+  "eval_weights": {
+   "deck_low": -0.2,
+   "deck_low_at": 14
+  }
+ },
+ "champion": {
+  "max_root_actions": 6,
+  "max_tree_depth": 1,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.8,
+  "deviate_margin": 0.1
+ },
+ "n_matches": 400,
+ "wins_a_candidate": 199,
+ "wins_b_champion": 201,
+ "draws": 0,
+ "winrate_a_excl_draws": 0.4975,
+ "wilson95_excl_draws": [
+  0.4488,
+  0.5463
+ ],
+ "promote_candidate": false,
+ "gate": "CI lower bound > 0.5",
+ "faults": {
+  "rejects": 0,
+  "exceptions": 0,
+  "unfinished": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "budget_violations_a": 0,
+  "budget_violations_b": 0,
+  "planner_fallbacks_a": 0,
+  "planner_fallbacks_b": 0,
+  "degraded_a": 0,
+  "degraded_b": 0
+ },
+ "fault_total": 0,
+ "a_move_max_ms_over_matches": {
+  "mean": 641.2,
+  "max": 653.4
+ },
+ "per_deck": {
+  "01_dragapult.csv": {
+   "n": 16,
+   "a_wins": 8,
+   "a_rate": 0.5
+  },
+  "02_raging_bolt_ogerpon.csv": {
+   "n": 16,
+   "a_wins": 13,
+   "a_rate": 0.812
+  },
+  "03_dragapult_blaziken.csv": {
+   "n": 16,
+   "a_wins": 8,
+   "a_rate": 0.5
+  },
+  "04_dragapult_dusknoir.csv": {
+   "n": 16,
+   "a_wins": 5,
+   "a_rate": 0.312
+  },
+  "05_dragapult_dudunsparce.csv": {
+   "n": 16,
+   "a_wins": 7,
+   "a_rate": 0.438
+  },
+  "06_hydrapple.csv": {
+   "n": 16,
+   "a_wins": 6,
+   "a_rate": 0.375
+  },
+  "07_n_s_zoroark_n.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "08_ogerpon_box.csv": {
+   "n": 16,
+   "a_wins": 5,
+   "a_rate": 0.312
+  },
+  "09_slowking.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  },
+  "10_hop_s_trevenant.csv": {
+   "n": 16,
+   "a_wins": 5,
+   "a_rate": 0.312
+  },
+  "11_lillie_s_clefairy.csv": {
+   "n": 16,
+   "a_wins": 6,
+   "a_rate": 0.375
+  },
+  "12_alakazam_dudunsparce.csv": {
+   "n": 16,
+   "a_wins": 6,
+   "a_rate": 0.375
+  },
+  "13_festival_lead.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  },
+  "14_mega_lucario_ex.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  },
+  "15_marnie_s_grimmsnarl_ex.csv": {
+   "n": 16,
+   "a_wins": 6,
+   "a_rate": 0.375
+  },
+  "16_crustle_mysterious_rock_inn.csv": {
+   "n": 16,
+   "a_wins": 7,
+   "a_rate": 0.438
+  },
+  "17_rocket_s_mewtwo_ex.csv": {
+   "n": 16,
+   "a_wins": 7,
+   "a_rate": 0.438
+  },
+  "18_rocket_s_honchkrow.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  },
+  "19_ethan_s_typhlosion.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "20_cynthia_s_garchomp_ex.csv": {
+   "n": 16,
+   "a_wins": 8,
+   "a_rate": 0.5
+  },
+  "21_lillie_s_clefairy_ex_naic_champion.csv": {
+   "n": 16,
+   "a_wins": 10,
+   "a_rate": 0.625
+  },
+  "22_dragapult_ex_naic_2nd.csv": {
+   "n": 16,
+   "a_wins": 8,
+   "a_rate": 0.5
+  },
+  "23_slowking_naic_4th.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "24_n_s_zoroark_ex_naic_10th.csv": {
+   "n": 16,
+   "a_wins": 6,
+   "a_rate": 0.375
+  },
+  "25_mega_lopunny_ex.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  }
+ }
+}

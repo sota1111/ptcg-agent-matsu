@@ -92,6 +92,40 @@ class TestFeaturize(unittest.TestCase):
             self.assertEqual(len(featurize(obs, 0)), len(FEATURE_NAMES))
 
 
+class TestHeuristicDeckLow(unittest.TestCase):
+    """SOT-1697 deck-preservation gradient: off by default (champion identity),
+    penalises a thin own deck when enabled via eval_weights."""
+
+    def _state(self, my_deck):
+        obs = _obs(me=player(deck_count=my_deck, active=[pokemon(101, hp=90)]),
+                   opp=player(deck_count=20, active=[pokemon(102, hp=90)]))
+        return _to_namespace(obs)
+
+    def test_default_off_is_identity(self):
+        ev = HeuristicEvaluator()
+        # deck_low defaults to 0 => a thin deck and a full deck score the same.
+        self.assertAlmostEqual(ev.evaluate(self._state(2), 0),
+                               ev.evaluate(self._state(30), 0))
+
+    def test_enabled_penalises_thin_own_deck(self):
+        ev = HeuristicEvaluator(weights={"deck_low": -0.5, "deck_low_at": 8})
+        thin = ev.evaluate(self._state(2), 0)   # 6 cards below threshold
+        full = ev.evaluate(self._state(30), 0)  # above threshold, no penalty
+        self.assertLess(thin, full)
+        # No penalty once the deck is at/above the threshold.
+        self.assertAlmostEqual(ev.evaluate(self._state(8), 0),
+                               ev.evaluate(self._state(30), 0))
+
+    def test_empty_deck_cliff_unchanged(self):
+        # Ramp kept below the deck_empty cliff (max at d=1 is -0.3*7=-2.1 > -3.0)
+        # so the terminal deck-out stays the worst non-terminal state.
+        ev = HeuristicEvaluator(weights={"deck_low": -0.3, "deck_low_at": 8})
+        # deckCount==0 still takes the terminal deck_empty cliff, not the ramp.
+        empty = ev.evaluate(self._state(0), 0)
+        one = ev.evaluate(self._state(1), 0)
+        self.assertLess(empty, one)
+
+
 class TestLearnedEvaluator(unittest.TestCase):
     def test_terminal_results_are_exact(self):
         ev = LearnedEvaluator(model=_model())

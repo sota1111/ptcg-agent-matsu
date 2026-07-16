@@ -1,0 +1,22 @@
+{
+  "issue": "SOT-1697",
+  "deck": "deck.csv",
+  "adapter_microbench": {
+    "positions": 12,
+    "reps": 60,
+    "calls": 720,
+    "mismatched_choices": 0,
+    "old_choices_per_s": 18611.9,
+    "new_choices_per_s": 91944.4,
+    "speedup_x": 4.94
+  },
+  "planner_iterations": {
+    "budget_s": 0.8,
+    "n_positions": 12,
+    "old_iters_mean": 197.8,
+    "new_iters_mean": 296.7,
+    "old_n": 12,
+    "new_n": 12,
+    "iters_speedup_x": 1.5
+  }
+}

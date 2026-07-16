@@ -40,6 +40,16 @@ DEFAULT_WEIGHTS = {
     "hp": 0.004,          # per HP point this side has in play
     "hand": 0.06,         # per card in hand
     "deck_empty": -3.0,   # this side loses at its next turn start (deck-out)
+    # Deck-preservation gradient (SOT-1697): the loss-trace analysis found
+    # deck-out is matsu's dominant defeat (53% of losses vs 竹, 91% vs 梅) — the
+    # champion only penalised the deck_empty CLIFF at deckCount==0 while `hand`
+    # positively rewards drawing, so the search happily mills itself. `deck_low`
+    # (<=0) applies a smooth penalty for each card the own deck sits below
+    # `deck_low_at`, steering the search away from self-deck-out lines *before*
+    # the terminal cliff. Default 0.0 => champion behaviour is unchanged; a
+    # candidate turns it on via eval_weights and is CI-gated vs champion.
+    "deck_low": 0.0,      # penalty per deck card below the threshold (<=0)
+    "deck_low_at": 0,     # threshold deck size; 0 disables the gradient
     "scale": 0.6,         # logistic scale on the score difference
 }
 
@@ -99,8 +109,13 @@ class HeuristicEvaluator(Evaluator):
         score += w["energy"] * energy
         score += w["hp"] * hp_total
         score += w["hand"] * (getattr(p, "handCount", 0) or 0)
-        if (getattr(p, "deckCount", 0) or 0) == 0:
+        deck = getattr(p, "deckCount", 0) or 0
+        if deck == 0:
             score += w["deck_empty"]
+        else:
+            thr = w.get("deck_low_at", 0) or 0
+            if thr and deck < thr:
+                score += w.get("deck_low", 0.0) * (thr - deck)
         return score
 
 
