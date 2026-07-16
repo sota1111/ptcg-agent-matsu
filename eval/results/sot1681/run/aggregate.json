@@ -1,0 +1,178 @@
+{
+  "issue": "SOT-1681",
+  "aggregated_from": 12,
+  "n_per_pairing": 96,
+  "deck_selection": {
+    "mode": "mirror",
+    "random": true,
+    "pool_size": 25,
+    "pool": [
+      "01_dragapult.csv",
+      "02_raging_bolt_ogerpon.csv",
+      "03_dragapult_blaziken.csv",
+      "04_dragapult_dusknoir.csv",
+      "05_dragapult_dudunsparce.csv",
+      "06_hydrapple.csv",
+      "07_n_s_zoroark_n.csv",
+      "08_ogerpon_box.csv",
+      "09_slowking.csv",
+      "10_hop_s_trevenant.csv",
+      "11_lillie_s_clefairy.csv",
+      "12_alakazam_dudunsparce.csv",
+      "13_festival_lead.csv",
+      "14_mega_lucario_ex.csv",
+      "15_marnie_s_grimmsnarl_ex.csv",
+      "16_crustle_mysterious_rock_inn.csv",
+      "17_rocket_s_mewtwo_ex.csv",
+      "18_rocket_s_honchkrow.csv",
+      "19_ethan_s_typhlosion.csv",
+      "20_cynthia_s_garchomp_ex.csv",
+      "21_lillie_s_clefairy_ex_naic_champion.csv",
+      "22_dragapult_ex_naic_2nd.csv",
+      "23_slowking_naic_4th.csv",
+      "24_n_s_zoroark_ex_naic_10th.csv",
+      "25_mega_lopunny_ex.csv"
+    ],
+    "seed": [
+      20260716001,
+      20260716002,
+      20260716003,
+      20260716004,
+      20260716005,
+      20260716006,
+      20260716007,
+      20260716008,
+      20260716009,
+      20260716010,
+      20260716011,
+      20260716012
+    ]
+  },
+  "contestants": [
+    {
+      "label": "matsu",
+      "kanji": "松",
+      "repo": "ptcg-agent-matsu"
+    },
+    {
+      "label": "take",
+      "kanji": "竹",
+      "repo": "ptcg-agent-take"
+    },
+    {
+      "label": "ume",
+      "kanji": "梅",
+      "repo": "ptcg-agent-ume"
+    }
+  ],
+  "pairings": [
+    {
+      "a": "matsu",
+      "b": "take",
+      "n": 96,
+      "decided": 96,
+      "a_wins": 79,
+      "b_wins": 17,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.8229,
+      "a_win_rate_ci95": [
+        0.7346,
+        0.8864
+      ],
+      "faults": {
+        "matsu": 0,
+        "take": 0
+      },
+      "first_player_win_rate": 0.4479,
+      "mean_steps": 158.3,
+      "first_decided": 96,
+      "first_wins": 43,
+      "steps_total": 15194
+    },
+    {
+      "a": "matsu",
+      "b": "ume",
+      "n": 96,
+      "decided": 96,
+      "a_wins": 73,
+      "b_wins": 23,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.7604,
+      "a_win_rate_ci95": [
+        0.6661,
+        0.8347
+      ],
+      "faults": {
+        "matsu": 0,
+        "ume": 0
+      },
+      "first_player_win_rate": 0.5,
+      "mean_steps": 169.8,
+      "first_decided": 96,
+      "first_wins": 48,
+      "steps_total": 16304
+    },
+    {
+      "a": "take",
+      "b": "ume",
+      "n": 96,
+      "decided": 96,
+      "a_wins": 80,
+      "b_wins": 16,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.8333,
+      "a_win_rate_ci95": [
+        0.7463,
+        0.8947
+      ],
+      "faults": {
+        "take": 0,
+        "ume": 0
+      },
+      "first_player_win_rate": 0.5521,
+      "mean_steps": 160.1,
+      "first_decided": 96,
+      "first_wins": 53,
+      "steps_total": 15367
+    }
+  ],
+  "standings": [
+    {
+      "contestant": "matsu",
+      "wins": 152,
+      "losses": 40,
+      "decided": 192,
+      "win_rate": 0.7917,
+      "win_rate_ci95": [
+        0.7288,
+        0.8431
+      ]
+    },
+    {
+      "contestant": "take",
+      "wins": 97,
+      "losses": 95,
+      "decided": 192,
+      "win_rate": 0.5052,
+      "win_rate_ci95": [
+        0.4351,
+        0.5751
+      ]
+    },
+    {
+      "contestant": "ume",
+      "wins": 39,
+      "losses": 153,
+      "decided": 192,
+      "win_rate": 0.2031,
+      "win_rate_ci95": [
+        0.1523,
+        0.2656
+      ]
+    }
+  ],
+  "note": "aggregated over independent seeded shards; engine has no seed API so results are statistical (Wilson CI)"
+}
