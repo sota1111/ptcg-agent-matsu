@@ -34,9 +34,9 @@ Usage (from the repo root; shard by varying --seed and --out):
         --sample-p 0.5 --out train/logs/cheater_1.jsonl \
         [--mcts-config '{"time_budget_s": 0.1}']
 
-Output JSONL fields: m=match index, t=turn, y=label (1 root won / 0 lost),
-h=HeuristicEvaluator prediction, x=feature vector; cheater mode adds
-who=perspective player index (y/h/x are from that player's perspective).
+Output JSONL keeps the compact training fields and adds a versioned analysis
+contract: actor, legal actions, chosen action, reward/outcome, winner and
+termination reason.  Cheater mode adds who=perspective player index.
 """
 import argparse
 import json
@@ -113,7 +113,7 @@ def play_and_log(game, agent0, agent1, cards, heuristic,
         raise RuntimeError(
             f"battle_start failed: errorPlayer={start.errorPlayer} "
             f"errorType={start.errorType}")
-    records = []  # (root_player, turn, heuristic_value, features)
+    records = []
     try:
         decisions = 0
         last_turn = -1
@@ -134,9 +134,17 @@ def play_and_log(game, agent0, agent1, cards, heuristic,
                     x = featurize(obs, actor, cards)
                     h = heuristic.evaluate(
                         _to_namespace({"current": current}), actor)
-                    records.append((actor, turn, h, x))
+                    records.append({"root": actor, "turn": turn, "h": h, "x": x})
             agent = agent0 if actor == 0 else agent1
-            obs = game.battle_select(agent.act(obs))
+            action = agent.act(obs)
+            if records and records[-1]["turn"] == turn and "action" not in records[-1]:
+                records[-1].update({
+                    "actor": actor,
+                    "legal_actions": (obs.get("select") or {}).get("option", []),
+                    "action": action,
+                    "turn_action_count": current.get("turnActionCount"),
+                })
+            obs = game.battle_select(action)
             decisions += 1
         return -1, records
     finally:
@@ -179,11 +187,20 @@ def play_and_log_cheater(game, agent0, agent1, cards, heuristic, featurize,
                     for who in (0, 1):
                         x = featurize(obs, who, cards)
                         h = heuristic.evaluate(ns, who)
-                        records.append((who, turn, h, x))
+                        records.append({"who": who, "turn": turn, "h": h, "x": x})
             agent = agent0 if actor == 0 else agent1
             state = parse_true_state(game.visualize_data())
             agent.set_true_fills(true_fills(current, state))
-            obs = game.battle_select(agent.act(obs))
+            action = agent.act(obs)
+            for record in records[-2:]:
+                if record["turn"] == turn and "action" not in record:
+                    record.update({
+                        "actor": actor,
+                        "legal_actions": (obs.get("select") or {}).get("option", []),
+                        "action": action,
+                        "turn_action_count": current.get("turnActionCount"),
+                    })
+            obs = game.battle_select(action)
             decisions += 1
         return -1, records
     finally:
@@ -223,9 +240,19 @@ def generate_cheater(game, agent_factory, n, base, cards, heuristic,
             if result not in (0, 1):  # draw/unfinished: no win/loss label
                 stats["draws" if result == 2 else "unfinished"] += 1
                 continue
-            for who, turn, h, x in records:
+            for record in records:
+                who, turn, h, x = (record["who"], record["turn"],
+                                   record["h"], record["x"])
                 out.write(json.dumps(
-                    {"m": i, "t": turn, "who": who, "y": float(result == who),
+                    {"schema": "matsu-battle-log-v2", "m": i, "t": turn,
+                     "who": who, "actor": record.get("actor"),
+                     "legal_actions": record.get("legal_actions", []),
+                     "action": record.get("action", []),
+                     "turn_action_count": record.get("turn_action_count"),
+                     "y": float(result == who),
+                     "reward": 1.0 if result == who else -1.0,
+                     "outcome": "win" if result == who else "loss",
+                     "winner": result, "termination_reason": "engine_result",
                      "h": round(h, 6), "x": [round(v, 6) for v in x]},
                     separators=(",", ":")) + "\n")
                 stats["examples"] += 1
@@ -300,9 +327,19 @@ def main():
             if result not in (0, 1):  # draw/unfinished: no win/loss label
                 stats["draws" if result == 2 else "unfinished"] += 1
                 continue
-            for root, turn, h, x in records:
+            for record in records:
+                root, turn, h, x = (record["root"], record["turn"],
+                                    record["h"], record["x"])
                 out.write(json.dumps(
-                    {"m": i, "t": turn, "y": float(result == root),
+                    {"schema": "matsu-battle-log-v2", "m": i, "t": turn,
+                     "actor": record.get("actor", root),
+                     "legal_actions": record.get("legal_actions", []),
+                     "action": record.get("action", []),
+                     "turn_action_count": record.get("turn_action_count"),
+                     "y": float(result == root),
+                     "reward": 1.0 if result == root else -1.0,
+                     "outcome": "win" if result == root else "loss",
+                     "winner": result, "termination_reason": "engine_result",
                      "h": round(h, 6), "x": [round(v, 6) for v in x]},
                     separators=(",", ":")) + "\n")
                 stats["examples"] += 1

@@ -175,6 +175,11 @@ class TestGenerateCheater(unittest.TestCase):
             self.assertEqual(len(records) % 2, 0)
             for r in records:
                 self.assertEqual(r["y"], float(r["who"] == 1))
+                self.assertEqual(r["schema"], "matsu-battle-log-v2")
+                self.assertIn(r["outcome"], ("win", "loss"))
+                self.assertIn(r["reward"], (-1.0, 1.0))
+                self.assertIsInstance(r["legal_actions"], list)
+                self.assertIsInstance(r["action"], list)
                 self.assertGreater(r["t"], 0)
                 self.assertEqual(len(r["x"]), len(make_featurizer("v1")[0]))
             by_turn = {}
