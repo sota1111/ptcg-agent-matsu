@@ -1,0 +1,246 @@
+{
+ "issue": "SOT-1693",
+ "shards": [
+  "eval/results/submission/s0_d0.json",
+  "eval/results/submission/s0_d10.json",
+  "eval/results/submission/s0_d15.json",
+  "eval/results/submission/s0_d20.json",
+  "eval/results/submission/s0_d5.json",
+  "eval/results/submission/s10_d0.json",
+  "eval/results/submission/s10_d10.json",
+  "eval/results/submission/s10_d15.json",
+  "eval/results/submission/s10_d20.json",
+  "eval/results/submission/s10_d5.json",
+  "eval/results/submission/s11_d0.json",
+  "eval/results/submission/s11_d10.json",
+  "eval/results/submission/s11_d15.json",
+  "eval/results/submission/s11_d20.json",
+  "eval/results/submission/s11_d5.json",
+  "eval/results/submission/s12_d0.json",
+  "eval/results/submission/s12_d10.json",
+  "eval/results/submission/s12_d15.json",
+  "eval/results/submission/s12_d20.json",
+  "eval/results/submission/s12_d5.json",
+  "eval/results/submission/s13_d0.json",
+  "eval/results/submission/s13_d10.json",
+  "eval/results/submission/s13_d15.json",
+  "eval/results/submission/s13_d20.json",
+  "eval/results/submission/s13_d5.json",
+  "eval/results/submission/s14_d0.json",
+  "eval/results/submission/s14_d10.json",
+  "eval/results/submission/s14_d15.json",
+  "eval/results/submission/s14_d20.json",
+  "eval/results/submission/s14_d5.json",
+  "eval/results/submission/s15_d0.json",
+  "eval/results/submission/s15_d10.json",
+  "eval/results/submission/s15_d15.json",
+  "eval/results/submission/s15_d20.json",
+  "eval/results/submission/s15_d5.json",
+  "eval/results/submission/s1_d0.json",
+  "eval/results/submission/s1_d10.json",
+  "eval/results/submission/s1_d15.json",
+  "eval/results/submission/s1_d20.json",
+  "eval/results/submission/s1_d5.json",
+  "eval/results/submission/s2_d0.json",
+  "eval/results/submission/s2_d10.json",
+  "eval/results/submission/s2_d15.json",
+  "eval/results/submission/s2_d20.json",
+  "eval/results/submission/s2_d5.json",
+  "eval/results/submission/s3_d0.json",
+  "eval/results/submission/s3_d10.json",
+  "eval/results/submission/s3_d15.json",
+  "eval/results/submission/s3_d20.json",
+  "eval/results/submission/s3_d5.json",
+  "eval/results/submission/s4_d0.json",
+  "eval/results/submission/s4_d10.json",
+  "eval/results/submission/s4_d15.json",
+  "eval/results/submission/s4_d20.json",
+  "eval/results/submission/s4_d5.json",
+  "eval/results/submission/s5_d0.json",
+  "eval/results/submission/s5_d10.json",
+  "eval/results/submission/s5_d15.json",
+  "eval/results/submission/s5_d20.json",
+  "eval/results/submission/s5_d5.json",
+  "eval/results/submission/s6_d0.json",
+  "eval/results/submission/s6_d10.json",
+  "eval/results/submission/s6_d15.json",
+  "eval/results/submission/s6_d20.json",
+  "eval/results/submission/s6_d5.json",
+  "eval/results/submission/s7_d0.json",
+  "eval/results/submission/s7_d10.json",
+  "eval/results/submission/s7_d15.json",
+  "eval/results/submission/s7_d20.json",
+  "eval/results/submission/s7_d5.json",
+  "eval/results/submission/s8_d0.json",
+  "eval/results/submission/s8_d10.json",
+  "eval/results/submission/s8_d15.json",
+  "eval/results/submission/s8_d20.json",
+  "eval/results/submission/s8_d5.json",
+  "eval/results/submission/s9_d0.json",
+  "eval/results/submission/s9_d10.json",
+  "eval/results/submission/s9_d15.json",
+  "eval/results/submission/s9_d20.json",
+  "eval/results/submission/s9_d5.json"
+ ],
+ "n_matches": 400,
+ "wins_a_mcts": 283,
+ "wins_b_greedy": 116,
+ "draws": 1,
+ "winrate_a_excl_draws": 0.7092731829573935,
+ "wilson95_excl_draws": [
+  0.6628882725688461,
+  0.751666728702125
+ ],
+ "faults": {
+  "rejects": 0,
+  "exceptions": 0,
+  "unfinished": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "budget_violations_a": 0,
+  "planner_fallbacks_a": 0,
+  "degraded_a": 0,
+  "emergency_fallbacks_a": 0,
+  "greedy_handoffs_a": 0
+ },
+ "fault_total": 0,
+ "per_deck": {
+  "01_dragapult.csv": {
+   "n": 16,
+   "a_wins": 10,
+   "a_rate": 0.625
+  },
+  "02_raging_bolt_ogerpon.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "03_dragapult_blaziken.csv": {
+   "n": 16,
+   "a_wins": 12,
+   "a_rate": 0.75
+  },
+  "04_dragapult_dusknoir.csv": {
+   "n": 16,
+   "a_wins": 8,
+   "a_rate": 0.5
+  },
+  "05_dragapult_dudunsparce.csv": {
+   "n": 16,
+   "a_wins": 13,
+   "a_rate": 0.812
+  },
+  "06_hydrapple.csv": {
+   "n": 16,
+   "a_wins": 13,
+   "a_rate": 0.812
+  },
+  "07_n_s_zoroark_n.csv": {
+   "n": 16,
+   "a_wins": 10,
+   "a_rate": 0.625
+  },
+  "08_ogerpon_box.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "09_slowking.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "10_hop_s_trevenant.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "11_lillie_s_clefairy.csv": {
+   "n": 16,
+   "a_wins": 12,
+   "a_rate": 0.75
+  },
+  "12_alakazam_dudunsparce.csv": {
+   "n": 16,
+   "a_wins": 14,
+   "a_rate": 0.875
+  },
+  "13_festival_lead.csv": {
+   "n": 16,
+   "a_wins": 13,
+   "a_rate": 0.812
+  },
+  "14_mega_lucario_ex.csv": {
+   "n": 16,
+   "a_wins": 12,
+   "a_rate": 0.75
+  },
+  "15_marnie_s_grimmsnarl_ex.csv": {
+   "n": 16,
+   "a_wins": 13,
+   "a_rate": 0.812
+  },
+  "16_crustle_mysterious_rock_inn.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "17_rocket_s_mewtwo_ex.csv": {
+   "n": 16,
+   "a_wins": 10,
+   "a_rate": 0.625
+  },
+  "18_rocket_s_honchkrow.csv": {
+   "n": 16,
+   "a_wins": 15,
+   "a_rate": 0.938
+  },
+  "19_ethan_s_typhlosion.csv": {
+   "n": 16,
+   "a_wins": 11,
+   "a_rate": 0.688
+  },
+  "20_cynthia_s_garchomp_ex.csv": {
+   "n": 16,
+   "a_wins": 15,
+   "a_rate": 0.938
+  },
+  "21_lillie_s_clefairy_ex_naic_champion.csv": {
+   "n": 16,
+   "a_wins": 12,
+   "a_rate": 0.75
+  },
+  "22_dragapult_ex_naic_2nd.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  },
+  "23_slowking_naic_4th.csv": {
+   "n": 16,
+   "a_wins": 7,
+   "a_rate": 0.438
+  },
+  "24_n_s_zoroark_ex_naic_10th.csv": {
+   "n": 16,
+   "a_wins": 10,
+   "a_rate": 0.625
+  },
+  "25_mega_lopunny_ex.csv": {
+   "n": 16,
+   "a_wins": 9,
+   "a_rate": 0.562
+  }
+ },
+ "a_move_time_ms": {
+  "n_decisions": 35248,
+  "mean": 553.26,
+  "p95": 640.73,
+  "max": 642.68
+ },
+ "a_think_time_per_match_s": {
+  "mean": 48.75,
+  "p95": 69.159,
+  "max": 390.383,
+  "allowance_s": 600.0
+ }
+}
