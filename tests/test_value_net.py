@@ -298,6 +298,7 @@ class TestEarlyCutoff(unittest.TestCase):
 
     def test_cutoff_config_reaches_planner_via_make_agent(self):
         agent = make_agent("mcts", seed=1, deck=[101] * 60,
+                           card_index=synthetic_card_index(),
                            rollout_cutoff={"min_steps": 5})
         self.assertEqual(agent.config.rollout_cutoff, {"min_steps": 5})
         self.assertEqual(agent.rollout_cutoffs, 0)  # planner not built yet
