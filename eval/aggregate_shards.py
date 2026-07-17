@@ -60,9 +60,13 @@ def aggregate(shard_paths: list) -> dict:
 
 
 def main():
-    if len(sys.argv) < 3:
+    # SOT-1708: an optional leading --kpi[=ISSUE] appends a KPI record.
+    argv = sys.argv[1:]
+    kpi = next((a for a in argv if a.startswith("--kpi")), None)
+    argv = [a for a in argv if not a.startswith("--kpi")]
+    if len(argv) < 2:
         raise SystemExit(__doc__)
-    out_path, shard_paths = sys.argv[1], sys.argv[2:]
+    out_path, shard_paths = argv[0], argv[1:]
     report = aggregate(shard_paths)
     with open(out_path, "w") as f:
         json.dump(report, f, indent=1)
@@ -80,6 +84,11 @@ def main():
           f"  degraded: A={report['degraded_count_a']}\n"
           f"  planner move max: {report['planner_move_max_ms']:.1f} ms\n"
           f"wrote {out_path}")
+    if kpi is not None:
+        from eval.kpi import append_history, record_from_bench
+        issue = kpi.split("=", 1)[1] if "=" in kpi else None
+        print("KPI record appended to "
+              f"{append_history(record_from_bench(report, issue=issue))}")
 
 
 if __name__ == "__main__":
