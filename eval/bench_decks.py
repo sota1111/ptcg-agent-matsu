@@ -189,6 +189,11 @@ def aggregate(args) -> int:
         with open(args.json, "w") as f:
             json.dump(report, f, indent=1)
         print(f"\nwrote {args.json}")
+    if args.kpi is not None:
+        from eval.kpi import append_history, record_from_bench_decks
+        path = append_history(record_from_bench_decks(report,
+                                                      issue=args.kpi or None))
+        print(f"KPI record appended to {path}")
     return 0
 
 
@@ -206,6 +211,9 @@ def main(argv=None) -> int:
     p.add_argument("--json", default=None, help="output path")
     p.add_argument("--aggregate", default=None,
                    help="glob of shard JSONs to merge instead of playing")
+    p.add_argument("--kpi", nargs="?", const="", default=None, metavar="ISSUE",
+                   help="with --aggregate: append a KPI record to "
+                        "eval/kpi_history.jsonl (SOT-1708)")
     args = p.parse_args(argv)
     if args.aggregate:
         return aggregate(args)

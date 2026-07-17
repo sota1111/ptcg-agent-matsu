@@ -181,6 +181,10 @@ def main():
                         help="JSON kwargs for agent A's constructor")
     parser.add_argument("--config-b", default=None,
                         help="JSON kwargs for agent B's constructor")
+    parser.add_argument("--kpi", nargs="?", const="", default=None,
+                        metavar="ISSUE",
+                        help="append a KPI record (A=matsu) to "
+                             "eval/kpi_history.jsonl (SOT-1708)")
     args = parser.parse_args()
 
     config_a = json.loads(args.config_a) if args.config_a else None
@@ -208,6 +212,11 @@ RESULT: {report['agent_a']} vs {report['agent_b']} (n={report['n_matches']})
         with open(args.json, "w") as f:
             json.dump(report, f, indent=2)
         print(f"wrote {args.json}")
+    if args.kpi is not None:
+        from eval.kpi import append_history, record_from_bench
+        path = append_history(record_from_bench(report,
+                                                issue=args.kpi or None))
+        print(f"KPI record appended to {path}")
 
 
 if __name__ == "__main__":
