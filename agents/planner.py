@@ -88,6 +88,10 @@ class PlannerConfig:
     max_tree_depth: int = 4      # tree depth before switching to rollout
     max_root_actions: int = 12   # root candidate-action cap
     max_child_actions: int = 8   # in-tree candidate-action cap
+    # Root-only self-deck-out guard (SOT-1704).  Zero disables it.  At or
+    # below the threshold, pure draw plays/abilities are removed before the
+    # max_root_actions cap; lethal lines and an all-filtered fallback remain.
+    deck_guard_threshold: int = 0
     time_budget_s: float = 0.1   # per-decision wall-clock budget
     budget_fraction: float = 0.8 # search cutoff fraction (rest is margin)
     # Iteration bound. Normally the wall clock binds first; the default cap
@@ -429,6 +433,7 @@ class MctsPlanner:
         scores = self._greedy.score_options(view)
         order = sorted(range(n), key=lambda i: (-scores[i], i))
         if lo == hi == 1:
+            order = self._guarded_root_order(view, order)
             picked = order[:cfg.max_root_actions]
             return ([[i] for i in picked],
                     _softmax([scores[i] for i in picked],
@@ -447,6 +452,47 @@ class MctsPlanner:
         prior_scores = [sum(scores[i] for i in a) for a in uniq]
         return ([list(a) for a in uniq],
                 _softmax(prior_scores, cfg.prior_temperature))
+
+    def _guarded_root_order(self, view: View, order: list[int]) -> list[int]:
+        """Suppress non-progress draw actions when deck-out is imminent.
+
+        Filtering happens only at the root candidate enumeration point, so it
+        cannot alter determinization, tree search, or ``deviate_margin``.
+        """
+        threshold = self.config.deck_guard_threshold
+        if threshold <= 0 or view.me.deck_count > threshold:
+            return order
+        kept = [i for i in order
+                if (self._is_lethal_option(view, i)
+                    or not self._is_pure_draw_option(view, i))]
+        return kept or order
+
+    def _is_pure_draw_option(self, view: View, option_index: int) -> bool:
+        opt = view.select.options[option_index]
+        raw = opt.raw
+        card_id = None
+        if opt.type == 7:  # PLAY: index within own hand
+            hand = view.me.hand_card_ids or []
+            index = raw.get("index")
+            if index is not None and 0 <= index < len(hand):
+                card_id = hand[index]
+        elif opt.type == 10:  # ABILITY: area/index identifies the Pokemon
+            pokemon = view.find_pokemon(
+                view.your_index, raw.get("area"), raw.get("index"))
+            card_id = pokemon.card_id if pokemon is not None else None
+        return card_id is not None and self.cards.card(card_id).pure_draw
+
+    def _is_lethal_option(self, view: View, option_index: int) -> bool:
+        opt = view.select.options[option_index]
+        if opt.type != 13 or not view.opp.active:
+            return False
+        defender = view.opp.active[0]
+        if defender is None:
+            return False
+        attack = self.cards.attack(opt.raw.get("attackId"))
+        prize_value = self.cards.card(defender.card_id).prize_value
+        return (attack.damage >= defender.hp
+                and prize_value >= view.opp.prize_count)
 
     # ---- worlds -----------------------------------------------------------
 

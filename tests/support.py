@@ -75,7 +75,9 @@ def synthetic_card_index() -> CardIndex:
                         weakness=None, resistance=None, energyType=0,
                         basic=False, stage1=False, stage2=False, ex=False,
                         megaEx=False, tera=False, aceSpec=False,
-                        evolvesFrom=None, skills=[], attacks=[]),
+                        evolvesFrom=None,
+                        skills=[SimpleNamespace(text="Draw 3 cards.")],
+                        attacks=[]),
     ]
     attacks = [
         SimpleNamespace(attackId=201, damage=50, energies=[3]),
