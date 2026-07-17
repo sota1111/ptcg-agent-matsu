@@ -189,6 +189,48 @@ class TestMctsPlanner(unittest.TestCase):
         self.assertEqual(planner.config.uct_c, 0.3)
         self.assertEqual(planner.config.rollout, "random")
 
+    def test_deck_guard_threshold_boundary_filters_pure_draw(self):
+        opts = [
+            {"type": 7, "index": 0},  # supporter 103: pure draw
+            {"type": 13, "attackId": 201},
+        ]
+        planner = self.planner(None, deck_guard_threshold=4)
+        low = adapt(observation(
+            select(opts),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=4),
+            opp=player(active=[pokemon(102)])))
+        above = adapt(observation(
+            select(opts),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=5),
+            opp=player(active=[pokemon(102)])))
+        self.assertEqual(planner._root_candidates(low, self.rng())[0], [[1]])
+        self.assertEqual(len(planner._root_candidates(above, self.rng())[0]),
+                         2)
+
+    def test_deck_guard_never_removes_lethal(self):
+        view = adapt(observation(
+            select([{"type": 7, "index": 0},
+                    {"type": 13, "attackId": 201}]),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=1),
+            opp=player(active=[pokemon(102, hp=40)], prize=1)))
+        planner = self.planner(None, deck_guard_threshold=8)
+        candidates, _ = planner._root_candidates(view, self.rng())
+        self.assertEqual(candidates, [[1]])
+        self.assertTrue(planner._is_lethal_option(view, 1))
+
+    def test_deck_guard_falls_back_when_every_candidate_is_draw(self):
+        view = adapt(observation(
+            select([{"type": 7, "index": 0}]),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=1)))
+        planner = self.planner(None, deck_guard_threshold=8)
+        # Exercise the helper directly because a one-option engine selection
+        # is forced and intentionally bypasses root enumeration.
+        self.assertEqual(planner._guarded_root_order(view, [0]), [0])
+
     def test_zero_budget_still_returns_a_legal_action(self):
         # Anytime contract: deadline already passed -> greedy prior comes
         # back immediately (worlds may build, but no iteration runs).

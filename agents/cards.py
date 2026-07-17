@@ -23,6 +23,28 @@ _DEFAULT_RETREAT = 1
 _DEFAULT_PRIZE_VALUE = 1
 
 
+def _is_pure_draw_text(text: str) -> bool:
+    """Conservatively identify effects whose only payoff is drawing cards.
+
+    This is deliberately attribute/text based rather than a card-ID list, so
+    newly appended cards degrade safely.  Hand cycling and discard costs are
+    still "pure draw"; effects that alter either board, prizes, or the
+    opponent's hand are not.
+    """
+    drawish = ("draw" in text
+               or ("look at the top" in text and "into your hand" in text))
+    if not drawish:
+        return False
+    board_effect_markers = (
+        "attach", "damage", "heal", "switch", "search your deck",
+        "take a prize card", "take 1 prize card", "knocked out",
+        "special condition", "poisoned",
+        "burned", "asleep", "paralyzed", "confused", "opponent discards",
+        "your opponent reveals", "each player", "opponent draws",
+    )
+    return not any(marker in text for marker in board_effect_markers)
+
+
 @dataclass(frozen=True)
 class CardFeatures:
     card_id: int
@@ -41,6 +63,7 @@ class CardFeatures:
     tera: bool
     ace_spec: bool
     has_ability: bool       # card has at least one skill (ability/effect)
+    pure_draw: bool         # action only cycles/draws cards; no board progress
     attack_ids: tuple
     max_attack_damage: int
     prize_value: int        # prizes the opponent takes when this is Knocked Out
@@ -63,6 +86,7 @@ def _default_card(card_id: int) -> CardFeatures:
         basic=False, stage1=False, stage2=False,
         ex=False, mega_ex=False, tera=False, ace_spec=False,
         has_ability=False, attack_ids=(), max_attack_damage=0,
+        pure_draw=False,
         prize_value=_DEFAULT_PRIZE_VALUE,
     )
 
@@ -102,6 +126,9 @@ class CardIndex:
             if cid is None:
                 continue
             attack_ids = tuple(int(a) for a in (_get(c, "attacks", ()) or ()))
+            skills = tuple(_get(c, "skills", ()) or ())
+            skill_text = " ".join(str(_get(s, "text", "") or "")
+                                  for s in skills).lower()
             mega_ex = bool(_get(c, "megaEx", False))
             ex = bool(_get(c, "ex", False))
             prize_value = 3 if mega_ex else (2 if ex else 1)
@@ -119,7 +146,8 @@ class CardIndex:
                 ex=ex, mega_ex=mega_ex,
                 tera=bool(_get(c, "tera", False)),
                 ace_spec=bool(_get(c, "aceSpec", False)),
-                has_ability=bool(_get(c, "skills", ()) or ()),
+                has_ability=bool(skills),
+                pure_draw=_is_pure_draw_text(skill_text),
                 attack_ids=attack_ids,
                 max_attack_damage=max(
                     (self.attack(a).damage for a in attack_ids), default=0),
