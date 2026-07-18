@@ -5,7 +5,9 @@ import time
 # Kaggle executes this file with exec(), so the submission directory is not
 # necessarily first on sys.path. Prefer the bundled agents/ package over an
 # unrelated kaggle_environments module with the same top-level name.
-_SUBMISSION_DIR = os.path.abspath(os.getcwd())
+_KAGGLE_AGENT_DIR = "/kaggle_simulations/agent"
+_SUBMISSION_DIR = (_KAGGLE_AGENT_DIR if os.path.isdir(_KAGGLE_AGENT_DIR)
+                   else os.path.abspath(os.getcwd()))
 if sys.path[0] != _SUBMISSION_DIR:
     sys.path.insert(0, _SUBMISSION_DIR)
 
