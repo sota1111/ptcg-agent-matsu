@@ -1,5 +1,13 @@
 import os
+import sys
 import time
+
+# Kaggle executes this file with exec(), so the submission directory is not
+# necessarily first on sys.path. Prefer the bundled agents/ package over an
+# unrelated kaggle_environments module with the same top-level name.
+_SUBMISSION_DIR = os.path.dirname(os.path.abspath(__file__))
+if sys.path[0] != _SUBMISSION_DIR:
+    sys.path.insert(0, _SUBMISSION_DIR)
 
 from agents import GreedyAgent, MctsAgent, actions
 from agents.observation import adapt
