@@ -221,6 +221,30 @@ class TestMctsPlanner(unittest.TestCase):
         self.assertEqual(candidates, [[1]])
         self.assertTrue(planner._is_lethal_option(view, 1))
 
+    def test_deck_guard_prize_gate_frees_the_endgame_dig(self):
+        # SOT-1729: with the gate set, a side 1-2 prizes from winning keeps
+        # its draw options even at a thin deck; far from the win the guard
+        # filters exactly as the unconditional SOT-1704 guard does.
+        opts = [
+            {"type": 7, "index": 0},  # supporter 103: pure draw
+            {"type": 13, "attackId": 201},
+        ]
+        planner = self.planner(None, deck_guard_threshold=4,
+                               deck_guard_prize_gate=3)
+        near_win = adapt(observation(
+            select(opts),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=4, prize=2),
+            opp=player(active=[pokemon(102)])))
+        far = adapt(observation(
+            select(opts),
+            me=player(active=[pokemon(101)], hand=[{"id": 103}],
+                      hand_count=1, deck_count=4, prize=3),
+            opp=player(active=[pokemon(102)])))
+        self.assertEqual(len(planner._root_candidates(near_win,
+                                                      self.rng())[0]), 2)
+        self.assertEqual(planner._root_candidates(far, self.rng())[0], [[1]])
+
     def test_deck_guard_falls_back_when_every_candidate_is_draw(self):
         view = adapt(observation(
             select([{"type": 7, "index": 0}]),
