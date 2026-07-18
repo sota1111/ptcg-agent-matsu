@@ -153,6 +153,39 @@ class TestConverters(unittest.TestCase):
         self.assertEqual(k["fault_total"]["value"], 0)
         self.assertEqual(k["decision_time_mean_ms"]["max_ms"], 900.0)
 
+    def test_from_bench_configs(self):
+        # SOT-1729 cycles: candidate-vs-champion records get their own KPI
+        # key, NOT mirror_winrate_vs_greedy (the opponent is not greedy).
+        report = {
+            "issue": "SOT-1697", "n_matches": 150, "seed": 20260719,
+            "candidate": {"deck_guard_threshold": 6,
+                          "deck_guard_prize_gate": 3},
+            "decks_dir": "decks/initial",
+            "wins_a_candidate": 80, "wins_b_champion": 70, "draws": 0,
+            "winrate_a_excl_draws": 80 / 150,
+            "wilson95_excl_draws": [0.4533, 0.6119],
+            "promote_candidate": False, "gate": "CI lower bound > 0.5",
+            "faults": {"rejects": 0, "exceptions": 0,
+                       "budget_violations_a": 0, "budget_violations_b": 0},
+            "fault_total": 0,
+            "per_deck": {f"{i:02d}_x.csv": {} for i in range(25)},
+            "a_move_max_ms_over_matches": {"mean": 640.0, "max": 655.0},
+        }
+        rec = kpi.record_from_bench_configs(report, issue="SOT-1729")
+        self.assertEqual(rec["issue"], "SOT-1729")
+        self.assertEqual(rec["source"], "bench_configs")
+        self.assertEqual(rec["opponent"], "champion-config")
+        self.assertEqual(rec["seed"], 20260719)
+        self.assertEqual(rec["n_decks"], 25)
+        self.assertEqual(rec["candidate"]["deck_guard_prize_gate"], 3)
+        k = rec["kpis"]
+        self.assertNotIn("mirror_winrate_vs_greedy", k)
+        self.assertAlmostEqual(k["mirror_winrate_vs_champion"]["value"],
+                               80 / 150)
+        self.assertFalse(k["mirror_winrate_vs_champion"]["promote"])
+        self.assertEqual(k["fault_total"]["value"], 0)
+        self.assertEqual(k["decision_time_mean_ms"]["budget_violations"], 0)
+
 
 class TestHistory(unittest.TestCase):
     def test_append_and_load_roundtrip(self):

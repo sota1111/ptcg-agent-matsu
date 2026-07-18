@@ -239,6 +239,48 @@ def record_from_bench(report: dict, issue: str = None) -> dict:
     return rec
 
 
+def record_from_bench_configs(report: dict, issue: str = None) -> dict:
+    """KPI record from an ``eval/bench_configs.py --aggregate`` report — the
+    A-side is a candidate config, the B-side the current champion config
+    (SOT-1729 screen/confirm cycles). The win rate is recorded under its own
+    KPI key (NOT ``mirror_winrate_vs_greedy``) because the opponent is the
+    champion, not the fixed greedy baseline — per the docs/KPI.md rule that a
+    baseline change gets a new KPI name."""
+    faults = dict(report.get("faults") or {})
+    mv = report.get("a_move_max_ms_over_matches") or {}
+    rec = _base_record(issue or report.get("issue"), "bench_configs")
+    rec.update({
+        "opponent": "champion-config",
+        "candidate": report.get("candidate"),
+        "deck_pool": report.get("decks_dir", "decks/initial"),
+        "n_decks": len(report.get("per_deck") or {}) or None,
+        "n_matches": report.get("n_matches"),
+        "seed": report.get("seed"),
+        "kpis": {
+            "mirror_winrate_vs_champion": {
+                "value": report.get("winrate_a_excl_draws"),
+                "ci95": report.get("wilson95_excl_draws"),
+                "wins": report.get("wins_a_candidate", 0),
+                "losses": report.get("wins_b_champion", 0),
+                "draws": report.get("draws", 0),
+                "promote": report.get("promote_candidate"),
+                "gate": report.get("gate"),
+            },
+            "fault_total": {
+                "value": report.get("fault_total"),
+                "breakdown": faults,
+            },
+            "decision_time_mean_ms": {
+                "value": None,
+                "note": "bench_configs records per-match move-time maxima",
+                "a_move_max_ms": mv,
+                "budget_violations": faults.get("budget_violations_a", 0),
+            },
+        },
+    })
+    return rec
+
+
 def append_history(record: dict, path: str = HISTORY_PATH) -> str:
     with open(path, "a") as f:
         f.write(json.dumps(record, sort_keys=True) + "\n")
@@ -380,7 +422,8 @@ def run_from_report(args) -> int:
     with open(args.from_report) as f:
         report = json.load(f)
     conv = {"bench_decks": record_from_bench_decks,
-            "bench": record_from_bench}[args.report_kind]
+            "bench": record_from_bench,
+            "bench_configs": record_from_bench_configs}[args.report_kind]
     rec = conv(report, issue=args.issue)
     print(json.dumps(rec, indent=1))
     if args.no_append:
@@ -405,7 +448,8 @@ def main(argv=None) -> int:
                    help="glob of --measure shard JSONs -> one history record")
     p.add_argument("--from-report", default=None,
                    help="existing bench report JSON -> one history record")
-    p.add_argument("--report-kind", choices=("bench", "bench_decks"),
+    p.add_argument("--report-kind",
+                   choices=("bench", "bench_decks", "bench_configs"),
                    default="bench_decks")
     p.add_argument("--issue", default=None, help="Linear issue id to record")
     p.add_argument("--no-append", action="store_true",

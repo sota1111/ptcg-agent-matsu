@@ -150,6 +150,7 @@ def aggregate(args) -> int:
     if not paths:
         raise SystemExit(f"no shard files match {args.aggregate}")
     matches, candidate, champion, issue = [], None, None, None
+    seeds, decks_dir = set(), None
     for p in paths:
         with open(p) as f:
             shard = json.load(f)
@@ -157,6 +158,9 @@ def aggregate(args) -> int:
         issue = issue or shard.get("issue")
         candidate = candidate or shard.get("candidate")
         champion = champion or shard.get("champion")
+        decks_dir = decks_dir or shard.get("decks_dir")
+        if shard.get("seed") is not None:
+            seeds.add(shard["seed"])
 
     wins_a = sum(m["a_won"] for m in matches)
     wins_b = sum(m["b_won"] for m in matches)
@@ -181,6 +185,9 @@ def aggregate(args) -> int:
         "issue": issue or "SOT-1697",
         "shards": paths,
         "candidate": candidate, "champion": champion,
+        "decks_dir": decks_dir,
+        "seed": (next(iter(seeds)) if len(seeds) == 1
+                 else sorted(seeds) if seeds else None),
         "n_matches": len(matches),
         "wins_a_candidate": wins_a, "wins_b_champion": wins_b, "draws": draws,
         "winrate_a_excl_draws": round(wins_a / decided, 4) if decided else None,
