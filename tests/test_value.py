@@ -96,8 +96,9 @@ class TestHeuristicDeckLow(unittest.TestCase):
     """SOT-1697 deck-preservation gradient: off by default (champion identity),
     penalises a thin own deck when enabled via eval_weights."""
 
-    def _state(self, my_deck):
-        obs = _obs(me=player(deck_count=my_deck, active=[pokemon(101, hp=90)]),
+    def _state(self, my_deck, my_prize=6):
+        obs = _obs(me=player(deck_count=my_deck, prize=my_prize,
+                             active=[pokemon(101, hp=90)]),
                    opp=player(deck_count=20, active=[pokemon(102, hp=90)]))
         return _to_namespace(obs)
 
@@ -124,6 +125,14 @@ class TestHeuristicDeckLow(unittest.TestCase):
         empty = ev.evaluate(self._state(0), 0)
         one = ev.evaluate(self._state(1), 0)
         self.assertLess(empty, one)
+
+    def test_prize_gate_preserves_endgame_dig(self):
+        ev = HeuristicEvaluator(weights={"deck_low": -0.2,
+                                         "deck_low_at": 14,
+                                         "deck_low_prize_gate": 3})
+        far = ev.evaluate(self._state(4, my_prize=3), 0)
+        near = ev.evaluate(self._state(4, my_prize=2), 0)
+        self.assertLess(far, near)
 
 
 class TestLearnedEvaluator(unittest.TestCase):

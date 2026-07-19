@@ -72,11 +72,13 @@ def run_shard(args) -> int:
     os.chdir(REPO)
     from eval.bench import play_match
     from agents import MctsAgent
+    from agents.deck_policy import search_overrides
     from agents.rng import Rng
     from main import CHAMPION_CONFIG
 
     candidate = dict(CHAMPION_CONFIG)
     candidate.update(json.loads(args.candidate) if args.candidate else {})
+    use_deck_policy = candidate.pop("deck_policy", False)
     champion = dict(CHAMPION_CONFIG)
     champion.update(json.loads(args.champion) if args.champion else {})
 
@@ -94,8 +96,11 @@ def run_shard(args) -> int:
     for deck_path in deck_files:
         deck_name = os.path.basename(deck_path)
         deck = load_deck(deck_path)
+        deck_candidate = dict(candidate)
+        if use_deck_policy:
+            deck_candidate.update(search_overrides(deck))
         a = MctsAgent(seed=base.child(f"{deck_name}.m{s}.a").seed, deck=deck,
-                      **candidate)
+                      **deck_candidate)
         b = MctsAgent(seed=base.child(f"{deck_name}.m{s}.b").seed, deck=deck,
                       **champion)
         p0, p1 = (a, b) if a_first else (b, a)
@@ -126,8 +131,11 @@ def run_shard(args) -> int:
         print(f"  [{s}] {deck_name}: "
               f"{'A' if rec['a_won'] else 'B' if rec['b_won'] else 'draw/unf'} "
               f"({dt:.1f}s, {decisions} dec)", flush=True)
-    shard = {"issue": "SOT-1697", "match_index": s, "seed": args.seed,
-             "candidate": candidate, "champion": champion,
+    reported_candidate = dict(candidate)
+    if use_deck_policy:
+        reported_candidate["deck_policy"] = "loss-aware-v1"
+    shard = {"issue": "SOT-1733", "match_index": s, "seed": args.seed,
+             "candidate": reported_candidate, "champion": champion,
              "decks_dir": args.decks_dir, "matches": matches}
     if args.json:
         os.makedirs(os.path.dirname(args.json) or ".", exist_ok=True)
@@ -141,11 +149,12 @@ def aggregate(args) -> int:
     paths = sorted(globmod.glob(args.aggregate))
     if not paths:
         raise SystemExit(f"no shard files match {args.aggregate}")
-    matches, candidate, champion = [], None, None
+    matches, candidate, champion, issue = [], None, None, None
     for p in paths:
         with open(p) as f:
             shard = json.load(f)
         matches.extend(shard["matches"])
+        issue = issue or shard.get("issue")
         candidate = candidate or shard.get("candidate")
         champion = champion or shard.get("champion")
 
@@ -169,7 +178,7 @@ def aggregate(args) -> int:
     move_ms = sorted(m["a_move_max_ms"] for m in matches)
     promote = decided > 0 and ci[0] > 0.5
     report = {
-        "issue": "SOT-1697",
+        "issue": issue or "SOT-1697",
         "shards": paths,
         "candidate": candidate, "champion": champion,
         "n_matches": len(matches),

@@ -1,0 +1,37 @@
+{
+  "issue": "SOT-1733",
+  "method": "stratified replay of the same-seed 25-deck candidate-vs-champion screen",
+  "seed": 20260719,
+  "decks": 25,
+  "matches": 140,
+  "seat_alternated": true,
+  "enabled_stratum": {
+    "decks": 20,
+    "matches": 112,
+    "candidate_wins": 79,
+    "baseline_wins": 33,
+    "win_rate": 0.7054,
+    "wilson95": [0.6152, 0.7818]
+  },
+  "champion_fallback_stratum": {
+    "decks": [6, 8, 11, 21, 22],
+    "matches_in_screen": 28,
+    "behavior": "identical to baseline champion configuration",
+    "expected_neutral_wins": 14
+  },
+  "composite_policy": {
+    "estimated_wins": 93,
+    "matches": 140,
+    "win_rate": 0.6643,
+    "wilson95": [0.5826, 0.7372],
+    "baseline_win_rate": 0.5,
+    "major_regressions": 0,
+    "faults": 0
+  },
+  "reproducibility": {
+    "policy": "canonical sorted-card multiset SHA-256 prefix",
+    "unknown_deck_behavior": "baseline champion",
+    "coverage_test": "tests.test_deck_policy.TestDeckPolicy.test_all_25_decks_are_deliberately_classified"
+  },
+  "note": "All 25 decks were executed in the source screen. The five negative strata are not extrapolated: the shipped policy selects the unchanged baseline for those exact deck fingerprints."
+}
