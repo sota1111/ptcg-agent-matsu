@@ -15,6 +15,7 @@ SOT-1672 layers [3]+[4]) plus Random/Greedy baselines.
 from .base import BaseAgent
 from .greedy_agent import GreedyAgent
 from .mcts_agent import MctsAgent
+from .policy_value import PolicyMctsAgent
 from .random_agent import RandomAgent
 from .rng import Rng
 
@@ -22,6 +23,7 @@ AGENT_TYPES = {
     "random": RandomAgent,
     "greedy": GreedyAgent,
     "mcts": MctsAgent,
+    "policy_mcts": PolicyMctsAgent,
 }
 
 
