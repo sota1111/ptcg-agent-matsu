@@ -189,6 +189,29 @@ class TestMctsPlanner(unittest.TestCase):
         self.assertEqual(planner.config.uct_c, 0.3)
         self.assertEqual(planner.config.rollout, "random")
 
+    def test_context_scorer_feature_flag_changes_prior_and_is_reversible(self):
+        opts = [
+            {"type": 13, "attackId": 201},
+            {"type": 9},
+        ]
+        view = adapt(observation(
+            select(opts), me=player(active=[pokemon(101)]),
+            opp=player(active=[pokemon(102, hp=200)])))
+        baseline = self.planner(None)._root_candidates(view, self.rng())[0]
+        enabled = self.planner(None, context_scorer=True)._root_candidates(
+            view, self.rng())[0]
+        reproduced = self.planner(None, context_scorer=False)._root_candidates(
+            view, self.rng())[0]
+        self.assertEqual(baseline, reproduced)
+        self.assertEqual(enabled[0], [1])  # Take band develops before non-KO
+
+    def test_context_rollout_returns_legal_selection(self):
+        planner = self.planner(None, rollout="context")
+        view = main_view()
+        action = planner._context.choose(view)
+        self.assertEqual(len(action), 1)
+        self.assertIn(action[0], range(len(view.select.options)))
+
     def test_deck_guard_threshold_boundary_filters_pure_draw(self):
         opts = [
             {"type": 7, "index": 0},  # supporter 103: pure draw
