@@ -10,6 +10,7 @@ SOT-1672 layers [3]+[4]) plus Random/Greedy baselines.
 - random_agent.py / greedy_agent.py / mcts_agent.py : policies
 - rng.py         : single externally-seeded RNG (no global random)
 - cards.py       : card-attribute feature index (unknown IDs -> defaults)
+- search_encoding.py: deterministic Search API state/action model inputs
 """
 from .base import BaseAgent
 from .greedy_agent import GreedyAgent
