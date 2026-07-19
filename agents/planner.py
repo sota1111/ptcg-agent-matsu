@@ -48,6 +48,7 @@ import time
 from dataclasses import dataclass, field
 
 from . import actions
+from .context_scorer import ContextScorer
 from .evaluator import HeuristicEvaluator
 from .greedy_agent import (GreedyAgent, _COST_CONTEXTS, _COUNT_MAX_CONTEXTS,
                            _YES_CONTEXTS)
@@ -81,7 +82,8 @@ class PlannerConfig:
     n_worlds: int = 3            # determinizations per decision (N)
     uct_c: float = 1.4           # PUCT exploration constant
     prior_temperature: float = 40.0  # softmax temp over greedy/tier scores
-    rollout: str = "greedy"      # rollout policy: "greedy" | "heuristic" | "random"
+    context_scorer: bool = False  # Take-style scoring for prior/fallback
+    rollout: str = "greedy"      # "greedy" | "context" | "heuristic" | "random"
     rollout_depth: int = 60      # rollout step cap before leaf evaluation
     rollout_turns: int = 2       # rollout turn-boundary cap (evaluate at the
                                  # start of a turn, when the board is settled)
@@ -346,6 +348,7 @@ class MctsPlanner:
         self._card_index = card_index
         self._clock = clock
         self._greedy = GreedyAgent(seed=0, card_index=card_index)
+        self._context = ContextScorer(self._greedy)
         self._solver = None
         self.degraded_count = 0   # decisions answered by the greedy prior
         self.rollout_cutoffs = 0  # rollouts ended by the Early Cutoff rule
@@ -430,7 +433,8 @@ class MctsPlanner:
         n = len(sel.options)
         if lo == hi and lo in (0, n):  # forced: empty or take-everything
             return [sorted(range(lo))] if lo == 0 else [list(range(n))], [1.0]
-        scores = self._greedy.score_options(view)
+        scorer = self._context if cfg.context_scorer else self._greedy
+        scores = scorer.score_options(view)
         order = sorted(range(n), key=lambda i: (-scores[i], i))
         if lo == hi == 1:
             order = self._guarded_root_order(view, order)
@@ -440,7 +444,7 @@ class MctsPlanner:
                              cfg.prior_temperature))
         # Count selection: greedy's own pick first, then extreme-count
         # top-score sets, then random legal samples for diversity.
-        cands = [tuple(sorted(self._greedy.choose(view)))]
+        cands = [tuple(sorted(scorer.choose(view)))]
         for k in (lo, hi):
             cands.append(tuple(sorted(order[:k])))
         attempts = 0
@@ -593,7 +597,13 @@ class MctsPlanner:
         n, lo, hi = _sel_bounds(sel)
         if lo == hi and lo in (0, n):
             return ([list(range(n)) if lo else []], [1.0])
-        scores = [self._tier_score(sel, opt, rng) for opt in sel.option]
+        if cfg.context_scorer:
+            try:
+                scores = self._context.score_options(adapt_engine_obs(obs))
+            except Exception:
+                scores = [self._tier_score(sel, opt, rng) for opt in sel.option]
+        else:
+            scores = [self._tier_score(sel, opt, rng) for opt in sel.option]
         order = sorted(range(n), key=lambda i: (-scores[i], i))
         if lo == hi == 1:
             picked = order[:cfg.max_child_actions]
@@ -668,14 +678,17 @@ class MctsPlanner:
             return sorted(rng.sample(range(n), max(lo, min(1, hi))))
         if self.config.rollout == "random":
             return sorted(rng.sample(range(n), rng.randint(lo, hi)))
-        if self.config.rollout == "greedy":
+        if self.config.rollout in ("greedy", "context"):
             # Full-strength GreedyAgent for BOTH sides (deterministic; only
             # coin outcomes above keep rollouts stochastic). adapt_engine_obs
             # builds the [1] Observation Adapter View straight from the engine's
             # dataclass observation — the old asdict() round-trip was ~40% of a
             # champion decision (SOT-1697 profiling); this is behavior-identical.
             try:
-                return self._greedy.choose(adapt_engine_obs(obs))
+                view = adapt_engine_obs(obs)
+                if self.config.rollout == "context":
+                    return self._context.choose(view)
+                return self._greedy.choose(view)
             except Exception:
                 pass  # non-dataclass double etc.: use the tier policy below
         scores = [self._tier_score(sel, opt, rng, obs) for opt in sel.option]
