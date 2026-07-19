@@ -12,6 +12,7 @@ if sys.path[0] != _SUBMISSION_DIR:
     sys.path.insert(0, _SUBMISSION_DIR)
 
 from agents import GreedyAgent, MctsAgent, actions
+from agents.deck_policy import search_overrides
 from agents.observation import adapt
 from agents.rng import Rng
 
@@ -63,8 +64,10 @@ class SubmissionAgent:
         self.seed = int(seed)
         self._deck = list(deck)
         self._clock = clock
+        config = dict(CHAMPION_CONFIG)
+        config.update(search_overrides(self._deck))
         self._mcts = MctsAgent(self.seed, deck=self._deck,
-                               card_index=card_index, **CHAMPION_CONFIG)
+                               card_index=card_index, **config)
         self._greedy = GreedyAgent(seed=self.seed, deck=self._deck,
                                    card_index=card_index)
         self._rng = Rng(self.seed).child("submission-last-resort")

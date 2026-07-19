@@ -50,6 +50,9 @@ DEFAULT_WEIGHTS = {
     # candidate turns it on via eval_weights and is CI-gated vs champion.
     "deck_low": 0.0,      # penalty per deck card below the threshold (<=0)
     "deck_low_at": 0,     # threshold deck size; 0 disables the gradient
+    # Apply preservation only while this many prizes remain. Near a win,
+    # drawing for the finisher remains correctly valued.
+    "deck_low_prize_gate": 0,
     "scale": 0.6,         # logistic scale on the score difference
 }
 
@@ -115,7 +118,9 @@ class HeuristicEvaluator(Evaluator):
         else:
             thr = w.get("deck_low_at", 0) or 0
             if thr and deck < thr:
-                score += w.get("deck_low", 0.0) * (thr - deck)
+                gate = w.get("deck_low_prize_gate", 0) or 0
+                if not gate or len(prize) >= gate:
+                    score += w.get("deck_low", 0.0) * (thr - deck)
         return score
 
 
