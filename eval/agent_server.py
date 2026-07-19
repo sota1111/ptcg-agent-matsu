@@ -43,6 +43,7 @@ importable, then serves requests until stdin is closed. It is launched as::
 ``cwd`` is prepended to ``sys.path`` so ``import main`` / the repo's ``cg``
 resolve locally.
 """
+import argparse
 import importlib
 import json
 import os
@@ -55,12 +56,23 @@ def _write_deck(deck: list) -> None:
         fh.write("\n".join(str(int(c)) for c in deck) + "\n")
 
 
-def main() -> int:
+def _load_deck(path: str) -> list[int]:
+    with open(path, encoding="utf-8") as fh:
+        return [int(line.strip()) for line in fh if line.strip()][:60]
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--deck", help="deck CSV to load before importing main.agent")
+    args = parser.parse_args(argv)
     sys.path.insert(0, os.getcwd())  # repo/sandbox root: resolve `main` / `cg`
+    if args.deck:
+        _write_deck(_load_deck(args.deck))
     import main as main_mod  # the project's Kaggle submission entry point
     assert hasattr(main_mod, "agent")
 
-    sys.stderr.write("READY\n")
+    loaded = os.path.abspath(args.deck) if args.deck else os.path.abspath("deck.csv")
+    sys.stderr.write(f"READY deck={loaded}\n")
     sys.stderr.flush()
 
     for line in sys.stdin:

@@ -13,6 +13,7 @@ from eval.battle_matsu_take_ume import (
     PairResult,
     aggregate_reports,
     build_deck_schedule,
+    resolve_deck,
     deck_usage,
     make_sandbox,
     standings,
@@ -129,6 +130,18 @@ class TestDeckSchedule(unittest.TestCase):
         usage = deck_usage(sched)
         # 4 matches * 2 contestant-slots = 8 slots counted.
         self.assertEqual(sum(usage.values()), 8)
+
+    def test_resolve_deck_by_id(self):
+        with tempfile.TemporaryDirectory() as root:
+            expected = os.path.join(root, "07_example.csv")
+            with open(expected, "w", encoding="utf-8") as fh:
+                fh.write("1\n")
+            self.assertEqual(resolve_deck(root, "07"), expected)
+
+    def test_resolve_deck_rejects_unknown_id(self):
+        with tempfile.TemporaryDirectory() as root:
+            with self.assertRaises(SystemExit):
+                resolve_deck(root, "99")
 
 
 class TestAggregateReports(unittest.TestCase):

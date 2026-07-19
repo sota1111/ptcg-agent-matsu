@@ -63,7 +63,8 @@ from typing import Optional
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SERVER = os.path.join(REPO, "eval", "agent_server.py")
-SIBLINGS = os.path.dirname(REPO)
+SIBLINGS = os.environ.get("PTCG_SIBLINGS_ROOT", os.path.dirname(REPO))
+ENGINE_REPO = os.environ.get("PTCG_ENGINE_REPO", REPO)
 
 # Contestant registry: label (kanji/rōmaji) -> repo directory name.
 CONTESTANTS = [
@@ -392,6 +393,7 @@ class Contestant:
     sandbox: Optional[str] = None
     # Deck the agent's planner was last synced to, so we only reload on a change.
     _planner_deck: Optional[list[int]] = field(default=None, repr=False)
+    deck_source: Optional[str] = None
 
     @property
     def python(self) -> str:
@@ -402,8 +404,11 @@ class Contestant:
         return self.sandbox or self.repo
 
     def start(self) -> None:
+        command = [self.python, SERVER]
+        if self.deck_source:
+            command.extend(["--deck", self.deck_source])
         self.proc = subprocess.Popen(
-            [self.python, SERVER],
+            command,
             cwd=self.cwd,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -412,7 +417,7 @@ class Contestant:
         )
         # Wait for the READY handshake so import errors surface immediately.
         line = self.proc.stderr.readline()
-        if line.strip() != "READY":
+        if not line.startswith("READY"):
             err = self.proc.stderr.read()
             raise RuntimeError(f"{self.label} agent failed to start: {line}{err}")
         # A relaunched server has a fresh module state, so re-sync its planner deck.
@@ -574,10 +579,38 @@ def build_contestants(load_own_deck: bool = True) -> list[Contestant]:
     return out
 
 
+def resolve_deck(decks_dir: str, deck_id: str) -> str:
+    """Resolve a contestant deck id (``01``) to one unambiguous pool CSV."""
+    matches = glob.glob(os.path.join(decks_dir, f"{deck_id}_*.csv"))
+    if len(matches) != 1:
+        raise SystemExit(
+            f"deck id {deck_id!r} resolved to {len(matches)} files in {decks_dir}")
+    return os.path.abspath(matches[0])
+
+
+def build_seat_contestant(spec: str, decks_dir: str, seat: int) -> Contestant:
+    """Build an isolated seat from ``tactic:deckId`` (same tactic may be used twice)."""
+    try:
+        tactic, deck_id = spec.split(":", 1)
+    except ValueError as exc:
+        raise SystemExit(f"--seat{seat} must be tactic:deckId, got {spec!r}") from exc
+    registry = {label: dirname for label, _kanji, dirname in CONTESTANTS}
+    if tactic not in registry or not deck_id:
+        raise SystemExit(f"invalid --seat{seat} contestant: {spec!r}")
+    repo = os.path.join(SIBLINGS, registry[tactic])
+    deck_source = resolve_deck(decks_dir, deck_id)
+    return Contestant(
+        label=spec, repo=repo, deck=load_deck(deck_source),
+        sandbox=make_sandbox(repo), deck_source=deck_source,
+    )
+
+
 def print_summary(report: dict) -> None:
     """Print the human-readable standings for a live or aggregated report."""
     ds = report.get("deck_selection", {})
-    if ds.get("random"):
+    if ds.get("mode") == "explicit_seats":
+        deck_desc = "explicit per-seat decks"
+    elif ds.get("random"):
         deck_desc = f"random {ds.get('mode')} from {ds.get('pool_size')} decks (seed={ds.get('seed')})"
     else:
         deck_desc = "each repo's own deck.csv"
@@ -613,6 +646,8 @@ def main(argv: Optional[list[str]] = None) -> int:
                         "(isolates agent skill); independent: each draws its own")
     p.add_argument("--seed", type=int, default=None,
                    help="seed the deck-selection RNG (engine shuffles stay random)")
+    p.add_argument("--seat0", help="explicit seat contestant as tactic:deckId")
+    p.add_argument("--seat1", help="explicit seat contestant as tactic:deckId")
     args = p.parse_args(argv)
 
     if args.aggregate:
@@ -629,11 +664,14 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 0
 
     # Host the engine from this repo (cg.game is a process-global single battle).
-    sys.path.insert(0, REPO)
-    os.chdir(REPO)
+    sys.path.insert(0, ENGINE_REPO)
+    os.chdir(ENGINE_REPO)
     from cg import game
 
-    random_decks = args.decks_dir is not None
+    if bool(args.seat0) != bool(args.seat1):
+        p.error("--seat0 and --seat1 must be specified together")
+    explicit_seats = args.seat0 is not None
+    random_decks = args.decks_dir is not None and not explicit_seats
     deck_pool: list[str] = []
     deck_cache: dict[str, list[int]] = {}
     if random_decks:
@@ -646,7 +684,16 @@ def main(argv: Optional[list[str]] = None) -> int:
               f"(deck-mode={args.deck_mode}, seed={args.seed})",
               file=sys.stderr, flush=True)
 
-    contestants = build_contestants(load_own_deck=not random_decks)
+    if explicit_seats:
+        decks_dir = args.decks_dir or os.path.join(REPO, "decks", "initial")
+        if not os.path.isabs(decks_dir):
+            decks_dir = os.path.join(REPO, decks_dir)
+        contestants = [
+            build_seat_contestant(args.seat0, decks_dir, 0),
+            build_seat_contestant(args.seat1, decks_dir, 1),
+        ]
+    else:
+        contestants = build_contestants(load_own_deck=not random_decks)
     labels = [c.label for c in contestants]
     by_label = {c.label: c for c in contestants}
     # In random-deck mode each server runs in a sandbox cwd so its deck can be
@@ -690,19 +737,21 @@ def main(argv: Optional[list[str]] = None) -> int:
         "issue": "SOT-1681",
         "n_per_pairing": args.n,
         "deck_selection": {
-            "mode": args.deck_mode if random_decks else "own_deck_csv",
+            "mode": "explicit_seats" if explicit_seats else (args.deck_mode if random_decks else "own_deck_csv"),
             "random": random_decks,
             "pool_size": len(deck_pool),
             "pool": [os.path.basename(f) for f in deck_pool],
             "seed": args.seed,
             # Planner deck-sync (engine-dealt deck == agent-planned deck) is on for
             # all random-deck runs, so MCTS agents reason about the deck they pilot.
-            "planner_deck_sync": random_decks,
+            "planner_deck_sync": random_decks or explicit_seats,
         },
-        "contestants": [
+        "contestants": ([{"label": c.label, "repo": os.path.basename(c.repo),
+                           "deck": os.path.basename(c.deck_source or "deck.csv")}
+                          for c in contestants] if explicit_seats else [
             {"label": lb, "kanji": kanji, "repo": dirname}
             for lb, kanji, dirname in CONTESTANTS
-        ],
+        ]),
         "pairings": [pr.to_dict() for pr in pairs],
         "standings": table,
         "note": ("engine has no seed API; results are statistical (Wilson CI), "
@@ -714,13 +763,18 @@ def main(argv: Optional[list[str]] = None) -> int:
             for (a, b), sched in schedules.items()
         }
 
-    # Human-readable summary.
-    print_summary(report)
+    # Human-readable summary, except JSON-to-stdout mode used by adapters.
+    if args.json != "-":
+        print_summary(report)
 
     if args.json:
-        with open(args.json, "w", encoding="utf-8") as fh:
-            json.dump(report, fh, indent=2, ensure_ascii=False)
-        print(f"\nreport written to {args.json}", file=sys.stderr)
+        if args.json == "-":
+            json.dump(report, sys.stdout, ensure_ascii=False)
+            sys.stdout.write("\n")
+        else:
+            with open(args.json, "w", encoding="utf-8") as fh:
+                json.dump(report, fh, indent=2, ensure_ascii=False)
+            print(f"\nreport written to {args.json}", file=sys.stderr)
     return 0
 
 
