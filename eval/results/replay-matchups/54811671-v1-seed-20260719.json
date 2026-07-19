@@ -1,0 +1,175 @@
+{
+  "created_at": "2026-07-19T05:40:47.046561+00:00",
+  "fixture_sha256": "8b06ed85dc8c4d0de32ed14e7982965d61101ddfaa047fe863591e07de240354",
+  "fixture_version": "54811671-v1",
+  "matches": [
+    {
+      "archetype": "Alakazam",
+      "decisions": 123,
+      "episode_id": 86762772,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Alakazam",
+      "decisions": 40,
+      "episode_id": 86762772,
+      "fault": false,
+      "result": "loss",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Mega Lucario",
+      "decisions": 108,
+      "episode_id": 86794667,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Mega Lucario",
+      "decisions": 92,
+      "episode_id": 86794667,
+      "fault": false,
+      "result": "loss",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Alakazam",
+      "decisions": 140,
+      "episode_id": 86736159,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Alakazam",
+      "decisions": 118,
+      "episode_id": 86736159,
+      "fault": false,
+      "result": "loss",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Alakazam",
+      "decisions": 142,
+      "episode_id": 86755850,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Alakazam",
+      "decisions": 43,
+      "episode_id": 86755850,
+      "fault": false,
+      "result": "loss",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Area Zero Underdepths",
+      "decisions": 69,
+      "episode_id": 86815053,
+      "fault": false,
+      "result": "loss",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 1
+    },
+    {
+      "archetype": "Area Zero Underdepths",
+      "decisions": 117,
+      "episode_id": 86815053,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 1
+    },
+    {
+      "archetype": "Mega Lucario",
+      "decisions": 115,
+      "episode_id": 86775948,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Mega Lucario",
+      "decisions": 90,
+      "episode_id": 86775948,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 1
+    },
+    {
+      "archetype": "Team Rocket",
+      "decisions": 146,
+      "episode_id": 86742725,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Team Rocket",
+      "decisions": 95,
+      "episode_id": 86742725,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 1
+    },
+    {
+      "archetype": "Team Rocket",
+      "decisions": 84,
+      "episode_id": 86828047,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 0,
+      "timeout": false,
+      "winner_seat": 0
+    },
+    {
+      "archetype": "Team Rocket",
+      "decisions": 101,
+      "episode_id": 86828047,
+      "fault": false,
+      "result": "win",
+      "submission_seat": 1,
+      "timeout": false,
+      "winner_seat": 1
+    }
+  ],
+  "schema": "ptcg-replay-matchup-results-v1",
+  "seed": 20260719,
+  "summary": {
+    "faults": 0,
+    "losses": 5,
+    "timeouts": 0,
+    "wins": 11
+  }
+}
