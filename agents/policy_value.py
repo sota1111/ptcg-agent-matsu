@@ -55,6 +55,7 @@ class PolicyValueTransformer:
             "query": matrix(h, h), "key": matrix(h, h),
             "value": matrix(h, h), "output": matrix(h, h),
             "policy": matrix(h, h),
+            "policy_feature_head": [0.0] * self.action_size,
             "value_head": matrix(1, h)[0],
             "value_bias": 0.0, "policy_bias": 0.0,
         }
@@ -77,6 +78,11 @@ class PolicyValueTransformer:
                 raise ValueError(f"invalid {name} weight shape")
         if len(self.weights.get("value_head", ())) != self.hidden_size:
             raise ValueError("invalid value_head weight shape")
+        # Older exported v1 models predate distillation. A zero head preserves
+        # their output exactly while making legal-action features trainable.
+        self.weights.setdefault("policy_feature_head", [0.0] * self.action_size)
+        if len(self.weights["policy_feature_head"]) != self.action_size:
+            raise ValueError("invalid policy_feature_head weight shape")
 
     @staticmethod
     def _project(matrix, vector):
@@ -106,9 +112,10 @@ class PolicyValueTransformer:
         value = math.tanh(_dot(self.weights["value_head"], state_token)
                           + float(self.weights.get("value_bias", 0.0)))
         policy_state = self._project(self.weights["policy"], state_token)
-        logits = [_dot(policy_state, token)
+        logits = [_dot(policy_state, token) + _dot(
+                      self.weights["policy_feature_head"], action)
                   + float(self.weights.get("policy_bias", 0.0))
-                  for token in attended[1:]]
+                  for token, action in zip(attended[1:], actions)]
         return value, logits
 
     def save(self, path):
