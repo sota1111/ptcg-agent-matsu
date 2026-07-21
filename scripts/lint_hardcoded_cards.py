@@ -28,7 +28,11 @@ TARGET_DIRS = ["agents", "eval", "train"]
 TARGET_FILES = ["main.py"]
 # eval/run_match.py predates SOT-1671 (SOT-1670 probe script, kept verbatim
 # as it is line-referenced from docs/engine-facts.md).
-EXCLUDE = {os.path.join("eval", "run_match.py")}
+# eval/replay_matchups.py (SOT-1743) labels downloaded Kaggle replays with
+# human-readable archetype names; identifying archetypes BY card name is the
+# tool's purpose, not agent decision logic, so the card-NAME rule cannot apply.
+EXCLUDE = {os.path.join("eval", "run_match.py"),
+           os.path.join("eval", "replay_matchups.py")}
 
 ID_PATTERNS = [
     (re.compile(r"\b(?:card_?[iI]d|attack_?[iI]d|cardId|attackId)\s*(?:==|!=|<=|>=)\s*\d"),

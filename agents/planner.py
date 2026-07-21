@@ -94,6 +94,12 @@ class PlannerConfig:
     # below the threshold, pure draw plays/abilities are removed before the
     # max_root_actions cap; lethal lines and an all-filtered fallback remain.
     deck_guard_threshold: int = 0
+    # Prize-race condition on the root guard (SOT-1729): when > 0, the guard
+    # fires only while we still need at least this many prizes — a side 1-2
+    # prizes from winning is right to keep digging for the finisher, which is
+    # where the unconditional SOT-1704 guard lost ground (screens 0.44/0.40).
+    # Zero keeps the unconditional SOT-1704 behaviour.
+    deck_guard_prize_gate: int = 0
     time_budget_s: float = 0.1   # per-decision wall-clock budget
     budget_fraction: float = 0.8 # search cutoff fraction (rest is margin)
     # Iteration bound. Normally the wall clock binds first; the default cap
@@ -465,6 +471,9 @@ class MctsPlanner:
         """
         threshold = self.config.deck_guard_threshold
         if threshold <= 0 or view.me.deck_count > threshold:
+            return order
+        gate = self.config.deck_guard_prize_gate
+        if gate > 0 and view.me.prize_count < gate:
             return order
         kept = [i for i in order
                 if (self._is_lethal_option(view, i)
