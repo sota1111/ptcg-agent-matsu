@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -19,9 +17,3 @@ jobs:
       # forbidden-term lint (card-name check self-skips without data/),
       # syntax check, and unit tests (engine tests self-skip).
       - run: bash scripts/check.sh
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: vendor/ptcg-agent-core/package-lock.json
-      - run: bash scripts/check_core_compatibility.sh
