@@ -71,6 +71,9 @@ CONTESTANTS = [
     ("matsu", "松", "ptcg-agent-matsu"),
     ("take", "竹", "ptcg-agent-take"),
     ("ume", "梅", "ptcg-agent-ume"),
+    ("zero", "零", "ptcg-agent-zero"),
+    ("fable", "譚", "ptcg-agent-fable"),
+    ("sol", "陽", "ptcg-agent-sol"),
 ]
 
 DECK_SIZE = 60
@@ -397,7 +400,11 @@ class Contestant:
 
     @property
     def python(self) -> str:
-        return os.path.join(self.repo, "venv", "bin", "python")
+        for env_dir in ("venv", ".venv"):
+            candidate = os.path.join(self.repo, env_dir, "bin", "python")
+            if os.path.isfile(candidate):
+                return candidate
+        return sys.executable
 
     @property
     def cwd(self) -> str:
@@ -590,11 +597,20 @@ def resolve_deck(decks_dir: str, deck_id: str) -> str:
 
 def build_seat_contestant(spec: str, decks_dir: str, seat: int) -> Contestant:
     """Build an isolated seat from ``tactic:deckId`` (same tactic may be used twice)."""
+    registry = {label: dirname for label, _kanji, dirname in CONTESTANTS}
+    if ":" not in spec:
+        if spec not in registry:
+            raise SystemExit(f"invalid --seat{seat} contestant: {spec!r}")
+        repo = os.path.join(SIBLINGS, registry[spec])
+        deck_source = os.path.join(repo, "deck.csv")
+        return Contestant(
+            label=spec, repo=repo, deck=load_deck(deck_source),
+            sandbox=make_sandbox(repo), deck_source=deck_source,
+        )
     try:
         tactic, deck_id = spec.split(":", 1)
     except ValueError as exc:
         raise SystemExit(f"--seat{seat} must be tactic:deckId, got {spec!r}") from exc
-    registry = {label: dirname for label, _kanji, dirname in CONTESTANTS}
     if tactic not in registry or not deck_id:
         raise SystemExit(f"invalid --seat{seat} contestant: {spec!r}")
     repo = os.path.join(SIBLINGS, registry[tactic])
