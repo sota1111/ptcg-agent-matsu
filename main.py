@@ -6,7 +6,12 @@ import time
 # necessarily first on sys.path. Prefer the bundled agents/ package over an
 # unrelated kaggle_environments module with the same top-level name.
 _KAGGLE_AGENT_DIR = "/kaggle_simulations/agent"
-_SUBMISSION_DIR = (_KAGGLE_AGENT_DIR if os.path.isdir(_KAGGLE_AGENT_DIR)
+# Kaggle exec() does not define __file__; normal imports (tests, common-league
+# subprocesses, local tools) do.  Merely finding a stale Kaggle directory must
+# never redirect a normal runtime to another submission's ``agents`` package.
+_EXECUTED_BY_KAGGLE = "__file__" not in globals()
+_SUBMISSION_DIR = (_KAGGLE_AGENT_DIR
+                   if _EXECUTED_BY_KAGGLE and os.path.isdir(_KAGGLE_AGENT_DIR)
                    else os.path.abspath(os.getcwd()))
 if sys.path[0] != _SUBMISSION_DIR:
     sys.path.insert(0, _SUBMISSION_DIR)
@@ -15,6 +20,8 @@ from agents import GreedyAgent, MctsAgent, actions
 from agents.deck_policy import search_overrides
 from agents.observation import adapt
 from agents.rng import Rng
+from agents.stability_profile import PROFILE as STABILITY_PROFILE
+from agents.stability_profile import runtime_overrides
 
 # Agent seed: externally injectable (SOT-1671 RNG discipline); the default
 # only fixes the tie-break/fallback stream, the engine shuffles independently.
@@ -33,6 +40,11 @@ CHAMPION_CONFIG = {
     "deviate_margin": 0.1,
 }
 
+# SOT-1868: promote the accepted SOT-1848 stability profile into the actual
+# Kaggle/runtime entrypoint. The original champion block remains visible as
+# the auditable baseline and these profile values are authoritative.
+CHAMPION_CONFIG.update(runtime_overrides())
+
 # Remaining-time-aware budget control (ASSUMPTIONS A-1: ~10 min total clock
 # per player per match; A-2: no per-move limit). Thresholds are on THIS
 # agent's cumulative act() wall-clock; crossing one shrinks the per-decision
@@ -43,14 +55,14 @@ CHAMPION_CONFIG = {
 # away from the 600s loss-on-timeout line.
 MATCH_TIME_ALLOWANCE_S = 600.0
 BUDGET_SCHEDULE = (
-    (300.0, 0.8),   # < 300s spent: champion budget
-    (420.0, 0.4),   # 300-420s: half budget
-    (510.0, 0.2),   # 420-510s: quarter budget
+    (300.0, CHAMPION_CONFIG["time_budget_s"]),
+    (420.0, CHAMPION_CONFIG["time_budget_s"] / 2),
+    (510.0, CHAMPION_CONFIG["time_budget_s"] / 4),
 )                   # >= 510s: Greedy handoff (no search)
 
 
 class SubmissionAgent:
-    """Submission wrapper: champion MCTS + time governor + layered fallbacks.
+    """Submission wrapper: stability MCTS + time governor + fallbacks.
 
     Failure containment (Validation Episode Error prevention), innermost
     first: MctsAgent already degrades on its own (planner exception -> greedy
@@ -75,6 +87,7 @@ class SubmissionAgent:
         self.move_times = []      # per-decision wall-clock (bench reporting)
         self.greedy_handoffs = 0  # decisions made by Greedy after exhaustion
         self.emergency_fallbacks = 0  # act()-level exceptions caught here
+        self.profile_id = STABILITY_PROFILE["profile_id"]
 
     # Counters proxied from the inner agents so benches see one namespace.
     @property

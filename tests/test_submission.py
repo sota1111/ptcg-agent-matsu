@@ -6,8 +6,10 @@ exhaustion), and the layered fallbacks (MCTS exception -> Greedy -> raw
 legal action), including the initial deck call.
 """
 import unittest
+from pathlib import Path
 
 import main as submission
+from agents.stability_profile import PROFILE
 from main import BUDGET_SCHEDULE, CHAMPION_CONFIG, SubmissionAgent
 from tests import support
 
@@ -58,13 +60,27 @@ class TestChampionConfig(unittest.TestCase):
     def test_mcts_core_uses_champion_config(self):
         agent = make_submission_agent()
         for key, value in CHAMPION_CONFIG.items():
+            if key == "eval_weights":
+                continue
             self.assertEqual(getattr(agent._mcts.config, key), value, key)
         # Unpinned fields keep the documented PlannerConfig defaults.
-        self.assertEqual(agent._mcts.config.uct_c, 1.4)
+        self.assertEqual(agent._mcts.config.uct_c, 0.72)
         self.assertEqual(agent._mcts.config.rollout, "greedy")
+
+    def test_promoted_profile_reaches_live_runtime(self):
+        agent = make_submission_agent()
+        self.assertEqual(agent.profile_id, "matsu-stability-control-v1")
+        self.assertEqual(agent._mcts.config.max_tree_depth, 5)
+        self.assertEqual(agent._mcts.config.time_budget_s, 0.25)
+        self.assertEqual(agent._mcts._evaluator.weights["deck_low"], -0.22)
+        self.assertEqual(PROFILE["fallback"], "highest-value-legal")
 
     def test_module_entrypoint_builds_submission_agent(self):
         self.assertIsNone(submission._agent)  # lazy until first agent() call
+
+    def test_local_runtime_does_not_import_stale_kaggle_package(self):
+        repo = Path(__file__).resolve().parents[1]
+        self.assertTrue(Path(submission.actions.__file__).resolve().is_relative_to(repo))
 
 
 class TestBudgetGovernor(unittest.TestCase):
@@ -75,8 +91,8 @@ class TestBudgetGovernor(unittest.TestCase):
         self.agent._mcts = self.stub
 
     def test_budget_steps_down_with_cumulative_think_time(self):
-        expected = [(0.0, 0.8), (299.9, 0.8), (300.0, 0.4), (419.9, 0.4),
-                    (420.0, 0.2), (509.9, 0.2)]
+        expected = [(0.0, 0.25), (299.9, 0.25), (300.0, 0.125),
+                    (419.9, 0.125), (420.0, 0.0625), (509.9, 0.0625)]
         for spent, budget in expected:
             self.agent.think_time_s = spent
             self.assertEqual(self.agent.current_budget(), budget, spent)
@@ -86,7 +102,7 @@ class TestBudgetGovernor(unittest.TestCase):
     def test_budget_is_applied_to_the_mcts_config(self):
         self.agent.think_time_s = 350.0
         self.agent.act(decision_obs())
-        self.assertEqual(self.stub.config.time_budget_s, 0.4)
+        self.assertEqual(self.stub.config.time_budget_s, 0.125)
         self.assertEqual(self.stub.calls, 1)
 
     def test_exhausted_clock_hands_off_to_greedy(self):
