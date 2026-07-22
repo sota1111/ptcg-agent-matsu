@@ -121,7 +121,7 @@ def _base_record(issue: str, source: str) -> dict:
 
 
 def build_record(matches: list, issue: str, source: str = "kpi-measure",
-                 opponent: str = "greedy", deck_pool: str = "decks/initial",
+                 opponent: str = "greedy", deck_pool: str = "decks/rotation_baseline",
                  seed=None) -> dict:
     """KPI record from per-match dicts produced by ``run_measure``."""
     wins = sum(m["matsu_won"] for m in matches)
@@ -197,7 +197,7 @@ def record_from_bench_decks(report: dict, issue: str = None) -> dict:
     rec = _base_record(issue or report.get("issue"), "bench_decks")
     rec.update({
         "opponent": "greedy",
-        "deck_pool": report.get("decks_dir", "decks/initial"),
+        "deck_pool": report.get("decks_dir", "decks/rotation_baseline"),
         "n_decks": len(report.get("per_deck") or {}) or None,
         "n_matches": report.get("n_matches"),
         "seed": report.get("seed"),
@@ -252,7 +252,7 @@ def record_from_bench_configs(report: dict, issue: str = None) -> dict:
     rec.update({
         "opponent": "champion-config",
         "candidate": report.get("candidate"),
-        "deck_pool": report.get("decks_dir", "decks/initial"),
+        "deck_pool": report.get("decks_dir", "decks/rotation_baseline"),
         "n_decks": len(report.get("per_deck") or {}) or None,
         "n_matches": report.get("n_matches"),
         "seed": report.get("seed"),
@@ -439,7 +439,7 @@ def main(argv=None) -> int:
                    help="play one shard of matsu-vs-greedy mirror matches")
     p.add_argument("--match-index", type=int, default=0,
                    help="shard id s (matsu takes seat s%%2)")
-    p.add_argument("--decks-dir", default="decks/initial")
+    p.add_argument("--decks-dir", default="decks/rotation_baseline")
     p.add_argument("--deck-offset", type=int, default=0)
     p.add_argument("--deck-limit", type=int, default=None)
     p.add_argument("--seed", type=int, default=20260717)

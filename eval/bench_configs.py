@@ -222,7 +222,7 @@ def aggregate(args) -> int:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--decks-dir", default="decks/initial")
+    p.add_argument("--decks-dir", default="decks/rotation_baseline")
     p.add_argument("--match-index", type=int, default=None,
                    help="shard id s: 1 match per deck, A first iff s even")
     p.add_argument("--deck-offset", type=int, default=0)

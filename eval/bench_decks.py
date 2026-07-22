@@ -1,7 +1,7 @@
 """25-deck rotation A/B bench: new main (champion MCTS) vs old main (Greedy).
 
 SOT-1693 generalization gate for the submission switch. Every deck in
-``decks/initial`` (the 25 tournament decks, SOT-1684) is played mirror (both
+``decks/rotation_baseline`` (the 25 tournament decks, SOT-1684) is played mirror (both
 seats pilot the same deck, matching the 25-deck mirror-random environment)
 with seat alternation, ``main.SubmissionAgent`` as contestant A vs
 ``GreedyAgent`` (the previous submission) as contestant B.
@@ -199,7 +199,7 @@ def aggregate(args) -> int:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--decks-dir", default="decks/initial")
+    p.add_argument("--decks-dir", default="decks/rotation_baseline")
     p.add_argument("--match-index", type=int, default=None,
                    help="shard id s: play 1 match per deck, seat A first "
                         "iff s is even")
