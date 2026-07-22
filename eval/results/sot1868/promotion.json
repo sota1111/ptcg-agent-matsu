@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "ptcg-matsu-runtime-promotion/v1",
+  "issue": "SOT-1868",
+  "profile": {
+    "id": "matsu-stability-control-v1",
+    "sourceIssue": "SOT-1848",
+    "runtimeCommit": "040fd367a57a7d36e1220d21c5cf90c4d52c3b97",
+    "baselineCommit": "b5423ec45e742a1d9268f2e6574a574d9a5f7a8f"
+  },
+  "submission": {
+    "entrypoint": "main.py",
+    "archive": "submission.tar.gz",
+    "archiveSha256": "155db3e78c7e7655122fdce1e8d688aa0b66f2ad1af781042b4f3b396c36ff81",
+    "deck": "deck.csv",
+    "deckSha256": "42068a1803902756badcfd418f6f348b7901365a281d78af0692cbf2589f0799",
+    "profileBundled": "agents/stability_profile.py"
+  },
+  "promotionGate": {
+    "priorAB": {
+      "artifact": "SOT-1848 artifacts/ptcg-matsu-stability/sot-1848/report.json",
+      "seeds": {"start": 184800, "count": 20},
+      "seatSwap": true,
+      "candidateWins": 33,
+      "games": 40,
+      "winRate": 0.825,
+      "wilson95Low": 0.6805000966821229,
+      "requiredWilson95LowExclusive": 0.5,
+      "pass": true
+    },
+    "realRuntime": {
+      "artifact": "eval/results/sot1868/runtime-smoke.json",
+      "engine": "cabt real process",
+      "agentSeed": 20260713,
+      "deckScheduleSeed": 186800,
+      "engineShuffleSeedInjectable": false,
+      "seatSwap": true,
+      "opponent": "sol:21",
+      "games": 2,
+      "decided": 2,
+      "unfinished": 0,
+      "faults": 0,
+      "illegalActions": 0,
+      "timeoutSeconds": 590,
+      "kaggleLimitSeconds": 600,
+      "pass": true
+    },
+    "submissionArchive": {"integrityChecked": true, "pass": true},
+    "pass": true
+  }
+}

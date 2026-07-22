@@ -1,0 +1,75 @@
+{
+  "issue": "SOT-1681",
+  "n_per_pairing": 2,
+  "deck_selection": {
+    "mode": "explicit_seats",
+    "random": false,
+    "pool_size": 0,
+    "pool": [],
+    "seed": 186800,
+    "planner_deck_sync": true
+  },
+  "contestants": [
+    {
+      "label": "matsu:21",
+      "repo": "ptcg-agent-matsu",
+      "deck": "21_lillie_s_clefairy_ex_naic_champion.csv"
+    },
+    {
+      "label": "sol:21",
+      "repo": "ptcg-agent-sol",
+      "deck": "21_lillie_s_clefairy_ex_naic_champion.csv"
+    }
+  ],
+  "pairings": [
+    {
+      "a": "matsu:21",
+      "b": "sol:21",
+      "n": 2,
+      "decided": 2,
+      "a_wins": 1,
+      "b_wins": 1,
+      "draws": 0,
+      "unfinished": 0,
+      "a_win_rate": 0.5,
+      "a_win_rate_ci95": [
+        0.0945,
+        0.9055
+      ],
+      "faults": {
+        "matsu:21": 0,
+        "sol:21": 0
+      },
+      "first_player_win_rate": 0.5,
+      "mean_steps": 169.0,
+      "first_decided": 2,
+      "first_wins": 1,
+      "steps_total": 338
+    }
+  ],
+  "standings": [
+    {
+      "contestant": "matsu:21",
+      "wins": 1,
+      "losses": 1,
+      "decided": 2,
+      "win_rate": 0.5,
+      "win_rate_ci95": [
+        0.0945,
+        0.9055
+      ]
+    },
+    {
+      "contestant": "sol:21",
+      "wins": 1,
+      "losses": 1,
+      "decided": 2,
+      "win_rate": 0.5,
+      "win_rate_ci95": [
+        0.0945,
+        0.9055
+      ]
+    }
+  ],
+  "note": "engine has no seed API; results are statistical (Wilson CI), not bit-reproducible"
+}
