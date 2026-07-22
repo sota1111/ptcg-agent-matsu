@@ -16,7 +16,7 @@ def load(path):
 
 class TestDeckPolicy(unittest.TestCase):
     def test_all_25_decks_are_deliberately_classified(self):
-        paths = glob.glob(os.path.join(REPO, "decks", "initial", "[0-9][0-9]_*.csv"))
+        paths = glob.glob(os.path.join(REPO, "decks", "rotation_baseline", "[0-9][0-9]_*.csv"))
         enabled = {int(os.path.basename(p)[:2])
                    for p in paths if search_overrides(load(p))}
         self.assertEqual(len(paths), 25)

@@ -175,7 +175,7 @@ class TestBenchDecksHelpers(unittest.TestCase):
         import os
         from eval.bench_decks import discover_decks
         repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        decks = discover_decks(os.path.join(repo, "decks", "initial"))
+        decks = discover_decks(os.path.join(repo, "decks", "rotation_baseline"))
         self.assertEqual(len(decks), 25)
         names = [os.path.basename(p) for p in decks]
         self.assertTrue(names[0].startswith("01_"))
