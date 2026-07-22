@@ -1,0 +1,992 @@
+{
+  "schema": "matsu-episode-analysis/v1",
+  "issue": "SOT-1853",
+  "episodes": {
+    "submission_id": 54811671,
+    "n": 76,
+    "wins": 31,
+    "losses": 45,
+    "win_rate": 0.4079,
+    "wilson95": [
+      0.3044,
+      0.5202
+    ],
+    "by_rating_gap": {
+      "stronger (+25..+100)": {
+        "n": 24,
+        "wins": 5,
+        "losses": 19
+      },
+      "much_stronger (>+100)": {
+        "n": 10,
+        "wins": 2,
+        "losses": 8
+      },
+      "weaker (-100..-25)": {
+        "n": 14,
+        "wins": 11,
+        "losses": 3
+      },
+      "peer (-25..+25)": {
+        "n": 23,
+        "wins": 11,
+        "losses": 12
+      },
+      "much_weaker (<-100)": {
+        "n": 4,
+        "wins": 2,
+        "losses": 2
+      },
+      "unknown": {
+        "n": 1,
+        "wins": 0,
+        "losses": 1
+      }
+    },
+    "upset_losses": [
+      {
+        "episode": 87113559,
+        "outcome": "loss",
+        "my_score": 556.9,
+        "opp_score": 469.1,
+        "gap": -87.8,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 133.4
+      },
+      {
+        "episode": 86971602,
+        "outcome": "loss",
+        "my_score": 536.0,
+        "opp_score": 525.8,
+        "gap": -10.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 136.2
+      },
+      {
+        "episode": 86904478,
+        "outcome": "loss",
+        "my_score": 540.5,
+        "opp_score": 518.2,
+        "gap": -22.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 137.8
+      },
+      {
+        "episode": 86815053,
+        "outcome": "loss",
+        "my_score": 554.5,
+        "opp_score": 524.0,
+        "gap": -30.5,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 143.0
+      },
+      {
+        "episode": 86742725,
+        "outcome": "loss",
+        "my_score": 573.0,
+        "opp_score": 553.9,
+        "gap": -19.1,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 160.3
+      },
+      {
+        "episode": 86736159,
+        "outcome": "loss",
+        "my_score": 581.9,
+        "opp_score": 563.0,
+        "gap": -18.9,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 127.3
+      },
+      {
+        "episode": 86733449,
+        "outcome": "loss",
+        "my_score": 615.8,
+        "opp_score": 614.4,
+        "gap": -1.4,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 128.1
+      },
+      {
+        "episode": 86730113,
+        "outcome": "loss",
+        "my_score": 644.7,
+        "opp_score": 548.3,
+        "gap": -96.4,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 142.7
+      },
+      {
+        "episode": 86725692,
+        "outcome": "loss",
+        "my_score": 608.9,
+        "opp_score": 585.2,
+        "gap": -23.7,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 128.5
+      },
+      {
+        "episode": 86724621,
+        "outcome": "loss",
+        "my_score": 655.2,
+        "opp_score": 531.6,
+        "gap": -123.6,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 0,
+        "duration_s": 145.4
+      },
+      {
+        "episode": 86721412,
+        "outcome": "loss",
+        "my_score": 663.6,
+        "opp_score": 551.1,
+        "gap": -112.5,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 1,
+        "duration_s": 145.8
+      },
+      {
+        "episode": 86719796,
+        "outcome": "loss",
+        "my_score": 651.1,
+        "opp_score": 635.6,
+        "gap": -15.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 164.2
+      }
+    ],
+    "replays_analyzed": 24,
+    "replay_losses": 11,
+    "loss_causes": {
+      "board_wipe": 10,
+      "other": 1
+    },
+    "rows": [
+      {
+        "episode": 87283100,
+        "outcome": "loss",
+        "my_score": 560.5,
+        "opp_score": 640.6,
+        "gap": 80.1,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 187.4
+      },
+      {
+        "episode": 87282098,
+        "outcome": "loss",
+        "my_score": 561.9,
+        "opp_score": 806.1,
+        "gap": 244.2,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 250.4
+      },
+      {
+        "episode": 87273371,
+        "outcome": "loss",
+        "my_score": 564.8,
+        "opp_score": 656.4,
+        "gap": 91.6,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 154.0
+      },
+      {
+        "episode": 87269261,
+        "outcome": "loss",
+        "my_score": 567.6,
+        "opp_score": 679.7,
+        "gap": 112.1,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 167.7
+      },
+      {
+        "episode": 87248045,
+        "outcome": "win",
+        "my_score": 561.1,
+        "opp_score": 680.1,
+        "gap": 119.0,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 0,
+        "duration_s": 161.5
+      },
+      {
+        "episode": 87218642,
+        "outcome": "loss",
+        "my_score": 564.7,
+        "opp_score": 618.6,
+        "gap": 53.9,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 159.0
+      },
+      {
+        "episode": 87189253,
+        "outcome": "win",
+        "my_score": 561.3,
+        "opp_score": 533.2,
+        "gap": -28.1,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 143.2
+      },
+      {
+        "episode": 87180831,
+        "outcome": "win",
+        "my_score": 556.2,
+        "opp_score": 591.0,
+        "gap": 34.8,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 166.9
+      },
+      {
+        "episode": 87180232,
+        "outcome": "win",
+        "my_score": 550.8,
+        "opp_score": 597.6,
+        "gap": 46.8,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 138.4
+      },
+      {
+        "episode": 87150560,
+        "outcome": "loss",
+        "my_score": 554.7,
+        "opp_score": 601.0,
+        "gap": 46.3,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 125.2
+      },
+      {
+        "episode": 87124177,
+        "outcome": "win",
+        "my_score": 550.4,
+        "opp_score": 523.9,
+        "gap": -26.5,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 151.3
+      },
+      {
+        "episode": 87113559,
+        "outcome": "loss",
+        "my_score": 556.9,
+        "opp_score": 469.1,
+        "gap": -87.8,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 133.4
+      },
+      {
+        "episode": 87103496,
+        "outcome": "win",
+        "my_score": 552.5,
+        "opp_score": 544.9,
+        "gap": -7.6,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 162.9
+      },
+      {
+        "episode": 87088423,
+        "outcome": "win",
+        "my_score": 547.7,
+        "opp_score": 546.5,
+        "gap": -1.1,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 151.3
+      },
+      {
+        "episode": 87067995,
+        "outcome": "win",
+        "my_score": 543.7,
+        "opp_score": 480.7,
+        "gap": -63.0,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 168.8
+      },
+      {
+        "episode": 87057986,
+        "outcome": "loss",
+        "my_score": 543.9,
+        "opp_score": 1034.7,
+        "gap": 490.7,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 157.1
+      },
+      {
+        "episode": 87047318,
+        "outcome": "win",
+        "my_score": 540.3,
+        "opp_score": 454.1,
+        "gap": -86.2,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 138.9
+      },
+      {
+        "episode": 87044808,
+        "outcome": "win",
+        "my_score": 534.7,
+        "opp_score": 553.3,
+        "gap": 18.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 170.6
+      },
+      {
+        "episode": 87028624,
+        "outcome": "win",
+        "my_score": 530.0,
+        "opp_score": 600,
+        "gap": 70.0,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 125.9
+      },
+      {
+        "episode": 87027258,
+        "outcome": "win",
+        "my_score": 524.2,
+        "opp_score": 543.0,
+        "gap": 18.8,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 173.8
+      },
+      {
+        "episode": 87009796,
+        "outcome": "loss",
+        "my_score": 525.6,
+        "opp_score": 801.9,
+        "gap": 276.4,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 0,
+        "duration_s": 148.0
+      },
+      {
+        "episode": 86982199,
+        "outcome": "loss",
+        "my_score": 530.3,
+        "opp_score": 570.1,
+        "gap": 39.9,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 182.6
+      },
+      {
+        "episode": 86971602,
+        "outcome": "loss",
+        "my_score": 536.0,
+        "opp_score": 525.8,
+        "gap": -10.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 136.2
+      },
+      {
+        "episode": 86958734,
+        "outcome": "win",
+        "my_score": 534.9,
+        "opp_score": 215.1,
+        "gap": -319.9,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 1,
+        "duration_s": 157.2
+      },
+      {
+        "episode": 86935679,
+        "outcome": "loss",
+        "my_score": 539.9,
+        "opp_score": 583.1,
+        "gap": 43.2,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 155.6
+      },
+      {
+        "episode": 86930861,
+        "outcome": "win",
+        "my_score": 533.9,
+        "opp_score": 538.4,
+        "gap": 4.6,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 128.0
+      },
+      {
+        "episode": 86904478,
+        "outcome": "loss",
+        "my_score": 540.5,
+        "opp_score": 518.2,
+        "gap": -22.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 137.8
+      },
+      {
+        "episode": 86877552,
+        "outcome": "loss",
+        "my_score": 546.1,
+        "opp_score": 572.1,
+        "gap": 26.0,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 154.4
+      },
+      {
+        "episode": 86867157,
+        "outcome": "win",
+        "my_score": 538.8,
+        "opp_score": 589.3,
+        "gap": 50.5,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 173.6
+      },
+      {
+        "episode": 86847319,
+        "outcome": "loss",
+        "my_score": 541.4,
+        "opp_score": 742.6,
+        "gap": 201.3,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 0,
+        "duration_s": 175.8
+      },
+      {
+        "episode": 86828047,
+        "outcome": "loss",
+        "my_score": 547.3,
+        "opp_score": 571.5,
+        "gap": 24.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 135.4
+      },
+      {
+        "episode": 86815053,
+        "outcome": "loss",
+        "my_score": 554.5,
+        "opp_score": 524.0,
+        "gap": -30.5,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 143.0
+      },
+      {
+        "episode": 86814687,
+        "outcome": "win",
+        "my_score": 547.5,
+        "opp_score": 548.0,
+        "gap": 0.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 250.0
+      },
+      {
+        "episode": 86794667,
+        "outcome": "loss",
+        "my_score": 553.9,
+        "opp_score": 582.9,
+        "gap": 29.0,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 143.0
+      },
+      {
+        "episode": 86775948,
+        "outcome": "loss",
+        "my_score": 561.1,
+        "opp_score": 567.0,
+        "gap": 5.9,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 123.2
+      },
+      {
+        "episode": 86762772,
+        "outcome": "loss",
+        "my_score": 566.1,
+        "opp_score": 600,
+        "gap": 33.9,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 176.8
+      },
+      {
+        "episode": 86755850,
+        "outcome": "loss",
+        "my_score": 571.9,
+        "opp_score": 626.2,
+        "gap": 54.3,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 154.2
+      },
+      {
+        "episode": 86751904,
+        "outcome": "win",
+        "my_score": 564.4,
+        "opp_score": 551.1,
+        "gap": -13.4,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 148.0
+      },
+      {
+        "episode": 86742725,
+        "outcome": "loss",
+        "my_score": 573.0,
+        "opp_score": 553.9,
+        "gap": -19.1,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 160.3
+      },
+      {
+        "episode": 86736159,
+        "outcome": "loss",
+        "my_score": 581.9,
+        "opp_score": 563.0,
+        "gap": -18.9,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 127.3
+      },
+      {
+        "episode": 86735407,
+        "outcome": "loss",
+        "my_score": 589.8,
+        "opp_score": 609.2,
+        "gap": 19.4,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 185.2
+      },
+      {
+        "episode": 86734740,
+        "outcome": "loss",
+        "my_score": 598.2,
+        "opp_score": 609.8,
+        "gap": 11.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 126.9
+      },
+      {
+        "episode": 86734114,
+        "outcome": "loss",
+        "my_score": 606.3,
+        "opp_score": 636.9,
+        "gap": 30.5,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 137.0
+      },
+      {
+        "episode": 86733449,
+        "outcome": "loss",
+        "my_score": 615.8,
+        "opp_score": 614.4,
+        "gap": -1.4,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 128.1
+      },
+      {
+        "episode": 86732778,
+        "outcome": "loss",
+        "my_score": 623.1,
+        "opp_score": 693.5,
+        "gap": 70.4,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 157.6
+      },
+      {
+        "episode": 86732867,
+        "outcome": "loss",
+        "my_score": 623.6,
+        "opp_score": 1099.8,
+        "gap": 476.2,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 149.1
+      },
+      {
+        "episode": 86732879,
+        "outcome": "loss",
+        "my_score": 632.4,
+        "opp_score": 667.1,
+        "gap": 34.6,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 142.6
+      },
+      {
+        "episode": 86732116,
+        "outcome": "win",
+        "my_score": 610.6,
+        "opp_score": 866.1,
+        "gap": 255.5,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 0,
+        "duration_s": 193.3
+      },
+      {
+        "episode": 86731494,
+        "outcome": "loss",
+        "my_score": 619.4,
+        "opp_score": 677.3,
+        "gap": 57.9,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 125.2
+      },
+      {
+        "episode": 86730823,
+        "outcome": "loss",
+        "my_score": 628.4,
+        "opp_score": 681.0,
+        "gap": 52.5,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 152.8
+      },
+      {
+        "episode": 86730113,
+        "outcome": "loss",
+        "my_score": 644.7,
+        "opp_score": 548.3,
+        "gap": -96.4,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 142.7
+      },
+      {
+        "episode": 86729423,
+        "outcome": "loss",
+        "my_score": 656.5,
+        "opp_score": 669.9,
+        "gap": 13.4,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 155.9
+      },
+      {
+        "episode": 86728742,
+        "outcome": "win",
+        "my_score": 642.8,
+        "opp_score": 657.4,
+        "gap": 14.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 164.5
+      },
+      {
+        "episode": 86728095,
+        "outcome": "loss",
+        "my_score": 653.7,
+        "opp_score": 710.8,
+        "gap": 57.1,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 141.5
+      },
+      {
+        "episode": 86727544,
+        "outcome": "win",
+        "my_score": 641.3,
+        "opp_score": 605.7,
+        "gap": -35.6,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 137.7
+      },
+      {
+        "episode": 86726960,
+        "outcome": "win",
+        "my_score": 625.6,
+        "opp_score": 639.5,
+        "gap": 13.9,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 165.4
+      },
+      {
+        "episode": 86726394,
+        "outcome": "win",
+        "my_score": 612.0,
+        "opp_score": 572.6,
+        "gap": -39.3,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 130.8
+      },
+      {
+        "episode": 86725801,
+        "outcome": "win",
+        "my_score": 593.9,
+        "opp_score": 615.2,
+        "gap": 21.3,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 155.5
+      },
+      {
+        "episode": 86725692,
+        "outcome": "loss",
+        "my_score": 608.9,
+        "opp_score": 585.2,
+        "gap": -23.7,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 128.5
+      },
+      {
+        "episode": 86725257,
+        "outcome": "loss",
+        "my_score": 625.7,
+        "opp_score": 653.5,
+        "gap": 27.8,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 1,
+        "duration_s": 147.5
+      },
+      {
+        "episode": 86724621,
+        "outcome": "loss",
+        "my_score": 655.2,
+        "opp_score": 531.6,
+        "gap": -123.6,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 0,
+        "duration_s": 145.4
+      },
+      {
+        "episode": 86724076,
+        "outcome": "win",
+        "my_score": 636.1,
+        "opp_score": 602.8,
+        "gap": -33.3,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 163.5
+      },
+      {
+        "episode": 86723549,
+        "outcome": "win",
+        "my_score": 613.4,
+        "opp_score": 606.2,
+        "gap": -7.2,
+        "gap_band": "peer (-25..+25)",
+        "seat": 1,
+        "duration_s": 141.3
+      },
+      {
+        "episode": 86723017,
+        "outcome": "loss",
+        "my_score": 633.3,
+        "opp_score": 696.5,
+        "gap": 63.2,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 160.2
+      },
+      {
+        "episode": 86722480,
+        "outcome": "loss",
+        "my_score": 655.2,
+        "opp_score": 715.1,
+        "gap": 59.8,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 147.1
+      },
+      {
+        "episode": 86721960,
+        "outcome": "win",
+        "my_score": 614.6,
+        "opp_score": 705.8,
+        "gap": 91.1,
+        "gap_band": "stronger (+25..+100)",
+        "seat": 0,
+        "duration_s": 137.1
+      },
+      {
+        "episode": 86721412,
+        "outcome": "loss",
+        "my_score": 663.6,
+        "opp_score": 551.1,
+        "gap": -112.5,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 1,
+        "duration_s": 145.8
+      },
+      {
+        "episode": 86720871,
+        "outcome": "win",
+        "my_score": 631.4,
+        "opp_score": 576.9,
+        "gap": -54.4,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 172.8
+      },
+      {
+        "episode": 86720336,
+        "outcome": "win",
+        "my_score": 596.5,
+        "opp_score": 528.4,
+        "gap": -68.1,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 153.2
+      },
+      {
+        "episode": 86719796,
+        "outcome": "loss",
+        "my_score": 651.1,
+        "opp_score": 635.6,
+        "gap": -15.5,
+        "gap_band": "peer (-25..+25)",
+        "seat": 0,
+        "duration_s": 164.2
+      },
+      {
+        "episode": 86719254,
+        "outcome": "win",
+        "my_score": 603.3,
+        "opp_score": 529.7,
+        "gap": -73.7,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 1,
+        "duration_s": 168.8
+      },
+      {
+        "episode": 86718722,
+        "outcome": "win",
+        "my_score": 542.2,
+        "opp_score": 488.6,
+        "gap": -53.6,
+        "gap_band": "weaker (-100..-25)",
+        "seat": 0,
+        "duration_s": 165.7
+      },
+      {
+        "episode": 86718174,
+        "outcome": "loss",
+        "my_score": 584.6,
+        "opp_score": 782.7,
+        "gap": 198.1,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 138.9
+      },
+      {
+        "episode": 86717639,
+        "outcome": "loss",
+        "my_score": 640.5,
+        "opp_score": 806.3,
+        "gap": 165.8,
+        "gap_band": "much_stronger (>+100)",
+        "seat": 1,
+        "duration_s": 160.1
+      },
+      {
+        "episode": 86717100,
+        "outcome": "win",
+        "my_score": 600,
+        "opp_score": 313.7,
+        "gap": -286.3,
+        "gap_band": "much_weaker (<-100)",
+        "seat": 0,
+        "duration_s": 157.9
+      },
+      {
+        "episode": 86716432,
+        "outcome": "loss",
+        "my_score": null,
+        "opp_score": null,
+        "gap": null,
+        "gap_band": "unknown",
+        "seat": 0,
+        "duration_s": 159.8
+      }
+    ]
+  },
+  "ab_results": [
+    {
+      "hypothesis": "deck_guard_threshold=4",
+      "stage": "small-N screen",
+      "n": 50,
+      "wins": 22,
+      "losses": 28,
+      "ci95": [
+        0.3116,
+        0.5769
+      ],
+      "fault_total": 0,
+      "promote": false
+    },
+    {
+      "hypothesis": "deck_guard_threshold=6",
+      "stage": "small-N screen",
+      "n": 50,
+      "wins": 20,
+      "losses": 30,
+      "ci95": [
+        0.2761,
+        0.5382
+      ],
+      "fault_total": 0,
+      "promote": false
+    },
+    {
+      "hypothesis": "loss-aware deck_low gradient",
+      "stage": "small-N screen",
+      "n": 140,
+      "wins": 87,
+      "losses": 53,
+      "ci95": [
+        0.5389,
+        0.6975
+      ],
+      "fault_total": 0,
+      "promote": true
+    },
+    {
+      "hypothesis": "loss-aware deck_low gradient",
+      "stage": "large-N confirm",
+      "n": 300,
+      "wins": 163,
+      "losses": 137,
+      "ci95": [
+        0.4868,
+        0.5988
+      ],
+      "fault_total": 0,
+      "promote": false
+    }
+  ],
+  "champion_updated": false
+}
