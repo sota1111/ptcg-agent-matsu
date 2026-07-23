@@ -43,6 +43,7 @@ class TestEvalWeightsWiring(unittest.TestCase):
                           card_index=CardIndex(), n_worlds=2)
         self.assertIsNone(agent._evaluator)
         self.assertEqual(agent.config.n_worlds, 2)
+        self.assertEqual(agent.search_iterations, 0)
 
     def test_explicit_evaluator_wins_over_eval_weights(self):
         sentinel = HeuristicEvaluator(weights={"prize_taken": 9.0})

@@ -40,13 +40,14 @@ class MctsAgent(BaseAgent):
         # ablation: bench.py --config-a can only pass constructor kwargs)
         # and overrides HeuristicEvaluator feature weights.
         eval_weights = config_overrides.pop("eval_weights", None)
-        if eval_weights and evaluator is None:
-            evaluator = HeuristicEvaluator(weights=eval_weights)
         self.config = config or PlannerConfig(**config_overrides)
         # Resolve the card master eagerly: the lazy singleton load would
         # otherwise land inside the first TIMED decision (budget criterion).
         self._card_index = card_index if card_index is not None \
             else shared_index()
+        if eval_weights and evaluator is None:
+            evaluator = HeuristicEvaluator(
+                weights=eval_weights, card_index=self._card_index)
         # String specs ("heuristic" / "learned") come from bench --config
         # JSON (SOT-1674); Evaluator instances pass through unchanged.
         if evaluator is not None and not hasattr(evaluator, "evaluate"):
@@ -59,6 +60,9 @@ class MctsAgent(BaseAgent):
         self.planner_fallbacks = 0
         self.budget_violations = 0
         self.move_times = []
+        # Cumulative search work for benchmark throughput reporting.  An
+        # "iteration" is one determinized MCTS simulation.
+        self.search_iterations = 0
 
     @property
     def planner(self) -> MctsPlanner:
@@ -84,6 +88,8 @@ class MctsAgent(BaseAgent):
         rng = self.rng.child(f"plan{self.decision_count}")
         try:
             action = self.planner.plan(view, rng)
+            self.search_iterations += int(
+                self.planner.last_stats.get("iterations", 0) or 0)
         except Exception:
             self.planner_fallbacks += 1
             if self._greedy_fallback is None:

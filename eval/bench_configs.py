@@ -110,6 +110,8 @@ def run_shard(args) -> int:
         dt = time.perf_counter() - t0
         a_move_max = max(a.move_times) if a.move_times else 0.0
         b_move_max = max(b.move_times) if b.move_times else 0.0
+        a_search_s = sum(a.move_times)
+        b_search_s = sum(b.move_times)
         rec = {
             "deck": deck_name, "match_index": s, "a_first": a_first,
             "result": result, "decisions": decisions,
@@ -126,6 +128,14 @@ def run_shard(args) -> int:
             "match_time_s": round(dt, 3),
             "a_move_max_ms": round(a_move_max * 1000, 1),
             "b_move_max_ms": round(b_move_max * 1000, 1),
+            "search_iterations_a": a.search_iterations,
+            "search_iterations_b": b.search_iterations,
+            "search_time_a_s": round(a_search_s, 4),
+            "search_time_b_s": round(b_search_s, 4),
+            "sims_per_s_a": (round(a.search_iterations / a_search_s, 1)
+                             if a_search_s else None),
+            "sims_per_s_b": (round(b.search_iterations / b_search_s, 1)
+                             if b_search_s else None),
         }
         matches.append(rec)
         print(f"  [{s}] {deck_name}: "
@@ -134,7 +144,7 @@ def run_shard(args) -> int:
     reported_candidate = dict(candidate)
     if use_deck_policy:
         reported_candidate["deck_policy"] = "loss-aware-v1"
-    shard = {"issue": "SOT-1733", "match_index": s, "seed": args.seed,
+    shard = {"issue": args.issue, "match_index": s, "seed": args.seed,
              "candidate": reported_candidate, "champion": champion,
              "decks_dir": args.decks_dir, "matches": matches}
     if args.json:
@@ -180,6 +190,10 @@ def aggregate(args) -> int:
         d["a_rate"] = round(d["a_wins"] / d["n"], 3) if d["n"] else None
 
     move_ms = sorted(m["a_move_max_ms"] for m in matches)
+    iterations_a = sum(m.get("search_iterations_a", 0) for m in matches)
+    iterations_b = sum(m.get("search_iterations_b", 0) for m in matches)
+    search_s_a = sum(m.get("search_time_a_s", 0.0) for m in matches)
+    search_s_b = sum(m.get("search_time_b_s", 0.0) for m in matches)
     promote = decided > 0 and ci[0] > 0.5
     report = {
         "issue": issue or "SOT-1697",
@@ -199,6 +213,16 @@ def aggregate(args) -> int:
         "a_move_max_ms_over_matches": {
             "mean": round(statistics.fmean(move_ms), 1) if move_ms else None,
             "max": move_ms[-1] if move_ms else None,
+        },
+        "search_throughput": {
+            "candidate_sims_per_s": (round(iterations_a / search_s_a, 1)
+                                     if search_s_a else None),
+            "champion_sims_per_s": (round(iterations_b / search_s_b, 1)
+                                    if search_s_b else None),
+            "candidate_vs_champion_ratio": (
+                round((iterations_a / search_s_a) /
+                      (iterations_b / search_s_b), 3)
+                if search_s_a and search_s_b and iterations_b else None),
         },
         "per_deck": dict(sorted(per_deck.items())),
     }
@@ -228,6 +252,8 @@ def main(argv=None) -> int:
     p.add_argument("--deck-offset", type=int, default=0)
     p.add_argument("--deck-limit", type=int, default=None)
     p.add_argument("--seed", type=int, default=20260716)
+    p.add_argument("--issue", default="SOT-1733",
+                   help="issue identifier recorded in shard/report metadata")
     p.add_argument("--candidate", default=None,
                    help="JSON overrides on CHAMPION_CONFIG for contestant A")
     p.add_argument("--champion", default=None,

@@ -135,6 +135,62 @@ class TestHeuristicDeckLow(unittest.TestCase):
         self.assertLess(far, near)
 
 
+class TestNextTurnBoardWipeRisk(unittest.TestCase):
+    """SOT-1878 replay-shaped board-wipe regression coverage."""
+
+    def _state(self, my_board, opp_active, opp_bench=()):
+        return _to_namespace(_obs(
+            me=player(active=my_board[:1], bench=my_board[1:]),
+            opp=player(active=[opp_active], bench=opp_bench)))
+
+    def test_candidate_penalises_board_where_every_pokemon_is_reachable(self):
+        cards = synthetic_card_index()
+        ev = HeuristicEvaluator(
+            weights={"board_wipe": -2.0}, card_index=cards)
+        exposed = self._state(
+            [pokemon(101, hp=40), pokemon(101, hp=50)],
+            pokemon(101, energies=(0, 0, 0)))  # payable 50-damage attack
+        survivor = self._state(
+            [pokemon(101, hp=40), pokemon(101, hp=80)],
+            pokemon(101, energies=(0, 0, 0)))
+        self.assertEqual(ev.board_wipe_risk(
+            exposed.current.players[0], exposed.current.players[1]), 1.0)
+        self.assertEqual(ev.board_wipe_risk(
+            survivor.current.players[0], survivor.current.players[1]), 0.0)
+        self.assertLess(ev.evaluate(exposed, 0), ev.evaluate(survivor, 0))
+
+    def test_unpayable_attack_is_not_reachable(self):
+        cards = synthetic_card_index()
+        ev = HeuristicEvaluator(
+            weights={"board_wipe": -2.0}, card_index=cards)
+        state = self._state(
+            [pokemon(101, hp=40)],
+            pokemon(101, energies=()))  # attack 201 requires one Energy
+        self.assertEqual(ev.board_wipe_risk(
+            state.current.players[0], state.current.players[1]), 0.0)
+
+    def test_charged_bench_attacker_models_switch_response(self):
+        cards = synthetic_card_index()
+        ev = HeuristicEvaluator(
+            weights={"board_wipe": -2.0}, card_index=cards)
+        state = self._state(
+            [pokemon(101, hp=25)],
+            pokemon(102, energies=()),
+            [pokemon(102, energies=(0, 0))])  # bench reaches 30
+        self.assertEqual(ev.board_wipe_risk(
+            state.current.players[0], state.current.players[1]), 1.0)
+
+    def test_default_weight_preserves_champion_value(self):
+        cards = synthetic_card_index()
+        state = self._state(
+            [pokemon(101, hp=40)],
+            pokemon(101, energies=(0, 0, 0)))
+        self.assertAlmostEqual(
+            HeuristicEvaluator(card_index=cards).evaluate(state, 0),
+            HeuristicEvaluator(weights={"board_wipe": 0.0},
+                               card_index=cards).evaluate(state, 0))
+
+
 class TestLearnedEvaluator(unittest.TestCase):
     def test_terminal_results_are_exact(self):
         ev = LearnedEvaluator(model=_model())

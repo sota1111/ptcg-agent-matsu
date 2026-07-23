@@ -348,10 +348,11 @@ class MctsPlanner:
         # battle agent always samples its worlds from the information set.
         self._fills_fn = fills_fn or sample_fills
         self.config = config or PlannerConfig()
-        self.evaluator = evaluator or HeuristicEvaluator()
         self._own_deck = list(own_deck)
         self._backend = backend
         self._card_index = card_index
+        self.evaluator = evaluator or HeuristicEvaluator(
+            card_index=card_index)
         self._clock = clock
         self._greedy = GreedyAgent(seed=0, card_index=card_index)
         self._context = ContextScorer(self._greedy)
