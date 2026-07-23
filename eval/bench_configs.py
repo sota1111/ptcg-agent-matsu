@@ -106,7 +106,8 @@ def run_shard(args) -> int:
         p0, p1 = (a, b) if a_first else (b, a)
         import time
         t0 = time.perf_counter()
-        result, decisions, reject, exception = play_match(p0, p1)
+        result, decisions, reject, exception, loss_causes = play_match(
+            p0, p1, include_loss_cause=True)
         dt = time.perf_counter() - t0
         a_move_max = max(a.move_times) if a.move_times else 0.0
         b_move_max = max(b.move_times) if b.move_times else 0.0
@@ -118,6 +119,8 @@ def run_shard(args) -> int:
             "a_won": result in (0, 1) and ((result == 0) == a_first),
             "b_won": result in (0, 1) and ((result == 0) != a_first),
             "draw": result == 2, "unfinished": result == -1 and not exception,
+            "loss_cause_a": loss_causes.get(0 if a_first else 1),
+            "loss_cause_b": loss_causes.get(1 if a_first else 0),
             "reject": reject, "exception": exception,
             "fallbacks_a": a.fallback_count, "fallbacks_b": b.fallback_count,
             "budget_violations_a": a.budget_violations,
@@ -194,7 +197,30 @@ def aggregate(args) -> int:
     iterations_b = sum(m.get("search_iterations_b", 0) for m in matches)
     search_s_a = sum(m.get("search_time_a_s", 0.0) for m in matches)
     search_s_b = sum(m.get("search_time_b_s", 0.0) for m in matches)
-    promote = decided > 0 and ci[0] > 0.5
+    candidate_sps = iterations_a / search_s_a if search_s_a else None
+    champion_sps = iterations_b / search_s_b if search_s_b else None
+    throughput_ratio = (
+        candidate_sps / champion_sps
+        if candidate_sps is not None and champion_sps else None)
+    fault_total = sum(faults.values())
+    statistical_gate = decided > 0 and ci[0] > 0.5
+    fault_gate = fault_total == 0
+    throughput_gate = throughput_ratio is not None and throughput_ratio >= 0.9
+    promote = statistical_gate and fault_gate and throughput_gate
+
+    def loss_kpis(side: str, losses: int) -> dict:
+        wipes = sum(m.get(f"loss_cause_{side}") == "board_wipe"
+                    for m in matches)
+        completed = sum(m["result"] in (0, 1, 2) for m in matches)
+        return {
+            "losses": losses,
+            "board_wipe_count": wipes,
+            "board_wipe_rate_in_losses": (
+                round(wipes / losses, 4) if losses else 0.0),
+            "board_wipe_avoidance_rate": (
+                round(1.0 - wipes / completed, 4) if completed else 0.0),
+        }
+
     report = {
         "issue": issue or "SOT-1697",
         "shards": paths,
@@ -207,22 +233,30 @@ def aggregate(args) -> int:
         "winrate_a_excl_draws": round(wins_a / decided, 4) if decided else None,
         "wilson95_excl_draws": [round(ci[0], 4), round(ci[1], 4)],
         "promote_candidate": promote,
-        "gate": "CI lower bound > 0.5",
+        "gate": {
+            "wilson95_lower_gt_0_5": statistical_gate,
+            "fault_total_eq_0": fault_gate,
+            "throughput_ratio_gte_0_9": throughput_gate,
+            "all_pass": promote,
+        },
         "faults": faults,
-        "fault_total": sum(faults.values()),
+        "fault_total": fault_total,
+        "terminal_loss_kpis": {
+            "candidate": loss_kpis("a", wins_b),
+            "champion": loss_kpis("b", wins_a),
+        },
         "a_move_max_ms_over_matches": {
             "mean": round(statistics.fmean(move_ms), 1) if move_ms else None,
             "max": move_ms[-1] if move_ms else None,
         },
         "search_throughput": {
-            "candidate_sims_per_s": (round(iterations_a / search_s_a, 1)
-                                     if search_s_a else None),
-            "champion_sims_per_s": (round(iterations_b / search_s_b, 1)
-                                    if search_s_b else None),
+            "candidate_sims_per_s": (
+                round(candidate_sps, 1) if candidate_sps is not None else None),
+            "champion_sims_per_s": (
+                round(champion_sps, 1) if champion_sps is not None else None),
             "candidate_vs_champion_ratio": (
-                round((iterations_a / search_s_a) /
-                      (iterations_b / search_s_b), 3)
-                if search_s_a and search_s_b and iterations_b else None),
+                round(throughput_ratio, 3)
+                if throughput_ratio is not None else None),
         },
         "per_deck": dict(sorted(per_deck.items())),
     }

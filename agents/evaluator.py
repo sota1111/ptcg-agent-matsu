@@ -60,6 +60,11 @@ DEFAULT_WEIGHTS = {
     # the promoted champion byte-for-byte equivalent; candidates enable it
     # through eval_weights and must pass the league promotion gate.
     "board_wipe": 0.0,
+    # Smooth alternative to the binary wipe cliff (SOT-1883).  The value is
+    # the fraction of visible Pokémon that survive the opponent's strongest
+    # currently payable attack, with a small normalized HP-margin bonus.
+    # Bench Pokémon therefore act as explicit switch/replacement routes.
+    "board_survival": 0.0,
     "scale": 0.6,         # logistic scale on the score difference
 }
 
@@ -128,6 +133,10 @@ class HeuristicEvaluator(Evaluator):
     def board_wipe_risk(self, defender, attacker) -> float:
         """Return 1 when all visible defenders are exposed next turn."""
         damage = self._reachable_damage(attacker)
+        return self._board_wipe_risk_at_damage(defender, damage)
+
+    @staticmethod
+    def _board_wipe_risk_at_damage(defender, damage: float) -> float:
         if damage <= 0:
             return 0.0
         in_play = list(getattr(defender, "active", None) or ())
@@ -139,6 +148,38 @@ class HeuristicEvaluator(Evaluator):
         if not known_hp or any(pk is None for pk in in_play):
             return 0.0
         return float(all(0 < hp <= damage for hp in known_hp))
+
+    @staticmethod
+    def _board_survival_at_damage(defender, damage: float) -> float:
+        """Continuous [0, 1] board survival estimate after one attack.
+
+        Unknown/facedown Pokémon are treated as viable escape routes instead
+        of inventing HP.  For known Pokémon the dominant term is the fraction
+        whose remaining HP exceeds reachable damage; a bounded margin term
+        breaks ties between survivors without introducing a costly rollout.
+        """
+        in_play = list(getattr(defender, "active", None) or ())
+        in_play += list(getattr(defender, "bench", None) or ())
+        if not in_play:
+            return 0.0
+        if damage <= 0:
+            return 1.0
+        survived = 0.0
+        margin = 0.0
+        for pk in in_play:
+            if pk is None:
+                survived += 1.0
+                continue
+            hp = float(getattr(pk, "hp", 0) or 0)
+            if hp > damage:
+                survived += 1.0
+                margin += min(1.0, (hp - damage) / max(hp, 1.0))
+        count = len(in_play)
+        return min(1.0, (survived + 0.25 * margin) / (1.25 * count))
+
+    def board_survival(self, defender, attacker) -> float:
+        return self._board_survival_at_damage(
+            defender, self._reachable_damage(attacker))
 
     def _side_score(self, p, opponent=None) -> float:
         w = self.weights
@@ -169,8 +210,15 @@ class HeuristicEvaluator(Evaluator):
                 gate = w.get("deck_low_prize_gate", 0) or 0
                 if not gate or len(prize) >= gate:
                     score += w.get("deck_low", 0.0) * (thr - deck)
-        if opponent is not None and w.get("board_wipe", 0.0):
-            score += w["board_wipe"] * self.board_wipe_risk(p, opponent)
+        if opponent is not None and (
+                w.get("board_wipe", 0.0) or w.get("board_survival", 0.0)):
+            damage = self._reachable_damage(opponent)
+            if w.get("board_wipe", 0.0):
+                score += w["board_wipe"] * self._board_wipe_risk_at_damage(
+                    p, damage)
+            if w.get("board_survival", 0.0):
+                score += w["board_survival"] * self._board_survival_at_damage(
+                    p, damage)
         return score
 
 
