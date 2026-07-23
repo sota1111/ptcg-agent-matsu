@@ -37,6 +37,7 @@ os.chdir(REPO)  # libcg.so & deck.csv resolve relative to the repo root
 from cg import game
 from agents import make_agent
 from agents.rng import Rng
+from eval.loss_kpi import terminal_loss_cause
 
 MAX_DECISIONS = 100000  # engine draws long before this (BattleData.h:66-74)
 
@@ -55,22 +56,6 @@ def wilson_ci(wins: int, n: int, z: float = 1.96) -> tuple:
     center = (p + z * z / (2 * n)) / denom
     margin = (z / denom) * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
     return (max(0.0, center - margin), min(1.0, center + margin))
-
-
-def terminal_loss_cause(current, loser: int) -> str:
-    """Classify a completed loss from the terminal board.
-
-    ``board_wipe`` means the losing side has neither an Active nor a Bench
-    Pokémon remaining. Other terminal paths (prizes, deck-out, effects) stay
-    grouped as ``other``; this deliberately avoids guessing from card names.
-    """
-    players = (current or {}).get("players") or ()
-    if loser not in (0, 1) or len(players) <= loser:
-        return "other"
-    side = players[loser] or {}
-    active = side.get("active") or ()
-    bench = side.get("bench") or ()
-    return "board_wipe" if not any(active) and not any(bench) else "other"
 
 
 def play_match(agent0, agent1, include_loss_cause=False):

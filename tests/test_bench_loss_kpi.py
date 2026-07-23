@@ -6,7 +6,7 @@ import unittest
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO)
 
-from eval.bench import terminal_loss_cause
+from eval.loss_kpi import terminal_loss_cause
 
 
 class TestTerminalLossCause(unittest.TestCase):
