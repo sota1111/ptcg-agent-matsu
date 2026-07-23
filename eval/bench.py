@@ -37,6 +37,7 @@ os.chdir(REPO)  # libcg.so & deck.csv resolve relative to the repo root
 from cg import game
 from agents import make_agent
 from agents.rng import Rng
+from eval.loss_kpi import terminal_loss_cause
 
 MAX_DECISIONS = 100000  # engine draws long before this (BattleData.h:66-74)
 
@@ -57,8 +58,13 @@ def wilson_ci(wins: int, n: int, z: float = 1.96) -> tuple:
     return (max(0.0, center - margin), min(1.0, center + margin))
 
 
-def play_match(agent0, agent1):
-    """One engine match. Returns (result, decisions, reject, exception)."""
+def play_match(agent0, agent1, include_loss_cause=False):
+    """One engine match.
+
+    The stable default return is ``(result, decisions, reject, exception)``.
+    A/B artifact callers may request a fifth item mapping losing seat to its
+    terminal cause.
+    """
     obs, start = game.battle_start(agent0._deck, agent1._deck)
     if obs is None:
         raise RuntimeError(
@@ -70,18 +76,26 @@ def play_match(agent0, agent1):
             current = obs.get("current") or {}
             result = current.get("result", -1)
             if result != -1:
-                return result, decisions, False, False
+                base = (result, decisions, False, False)
+                if include_loss_cause:
+                    causes = ({1 - result: terminal_loss_cause(
+                        current, 1 - result)} if result in (0, 1) else {})
+                    return base + (causes,)
+                return base
             agent = agent0 if current.get("yourIndex", 0) == 0 else agent1
             try:
                 action = agent.act(obs)
             except Exception:
-                return -1, decisions, False, True   # agent exception
+                base = (-1, decisions, False, True)
+                return base + ({},) if include_loss_cause else base
             try:
                 obs = game.battle_select(action)
             except Exception:
-                return -1, decisions, True, False   # engine reject
+                base = (-1, decisions, True, False)
+                return base + ({},) if include_loss_cause else base
             decisions += 1
-        return -1, decisions, False, False          # should be unreachable
+        base = (-1, decisions, False, False)        # should be unreachable
+        return base + ({},) if include_loss_cause else base
     finally:
         game.battle_finish()
 

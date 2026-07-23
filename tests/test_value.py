@@ -190,6 +190,32 @@ class TestNextTurnBoardWipeRisk(unittest.TestCase):
             HeuristicEvaluator(weights={"board_wipe": 0.0},
                                card_index=cards).evaluate(state, 0))
 
+    def test_smooth_survival_rewards_hp_margin_and_bench_escape(self):
+        cards = synthetic_card_index()
+        ev = HeuristicEvaluator(
+            weights={"board_survival": 1.0}, card_index=cards)
+        attacker = pokemon(101, energies=(0, 0, 0))  # reaches 50 damage
+        wiped = self._state([pokemon(101, hp=40)], attacker)
+        survivor = self._state([pokemon(101, hp=80)], attacker)
+        bench_escape = self._state(
+            [pokemon(101, hp=40), pokemon(101, hp=80)], attacker)
+        self.assertEqual(ev.board_survival(
+            wiped.current.players[0], wiped.current.players[1]), 0.0)
+        self.assertGreater(ev.evaluate(survivor, 0),
+                           ev.evaluate(wiped, 0))
+        self.assertGreater(ev.evaluate(bench_escape, 0),
+                           ev.evaluate(wiped, 0))
+
+    def test_smooth_survival_is_disabled_by_default(self):
+        cards = synthetic_card_index()
+        state = self._state(
+            [pokemon(101, hp=80)],
+            pokemon(101, energies=(0, 0, 0)))
+        self.assertAlmostEqual(
+            HeuristicEvaluator(card_index=cards).evaluate(state, 0),
+            HeuristicEvaluator(weights={"board_survival": 0.0},
+                               card_index=cards).evaluate(state, 0))
+
 
 class TestLearnedEvaluator(unittest.TestCase):
     def test_terminal_results_are_exact(self):

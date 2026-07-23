@@ -1,0 +1,223 @@
+{
+ "issue": "SOT-1883",
+ "shards": [
+  "eval/results/sot1883/screen/shard_0.json",
+  "eval/results/sot1883/screen/shard_1.json",
+  "eval/results/sot1883/screen/shard_2.json",
+  "eval/results/sot1883/screen/shard_3.json",
+  "eval/results/sot1883/screen/shard_4.json"
+ ],
+ "candidate": {
+  "max_root_actions": 6,
+  "max_tree_depth": 5,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.25,
+  "deviate_margin": 0.28,
+  "uct_c": 0.72,
+  "eval_weights": {
+   "deck_low": -0.22,
+   "deck_low_at": 12,
+   "deck_low_prize_gate": 3,
+   "board_survival": 1.0
+  }
+ },
+ "champion": {
+  "max_root_actions": 6,
+  "max_tree_depth": 5,
+  "rollout_turns": 100,
+  "rollout_depth": 200,
+  "n_worlds": 4,
+  "time_budget_s": 0.25,
+  "deviate_margin": 0.28,
+  "uct_c": 0.72,
+  "eval_weights": {
+   "deck_low": -0.22,
+   "deck_low_at": 12,
+   "deck_low_prize_gate": 3
+  }
+ },
+ "decks_dir": "decks/rotation_baseline",
+ "seed": 20260723,
+ "n_matches": 25,
+ "wins_a_candidate": 15,
+ "wins_b_champion": 10,
+ "draws": 0,
+ "winrate_a_excl_draws": 0.6,
+ "wilson95_excl_draws": [
+  0.4074,
+  0.766
+ ],
+ "promote_candidate": false,
+ "gate": {
+  "wilson95_lower_gt_0_5": false,
+  "fault_total_eq_0": true,
+  "throughput_ratio_gte_0_9": true,
+  "all_pass": false
+ },
+ "faults": {
+  "rejects": 0,
+  "exceptions": 0,
+  "unfinished": 0,
+  "fallbacks_a": 0,
+  "fallbacks_b": 0,
+  "budget_violations_a": 0,
+  "budget_violations_b": 0,
+  "planner_fallbacks_a": 0,
+  "planner_fallbacks_b": 0,
+  "degraded_a": 0,
+  "degraded_b": 0
+ },
+ "fault_total": 0,
+ "terminal_loss_kpis": {
+  "candidate": {
+   "losses": 10,
+   "board_wipe_count": 1,
+   "board_wipe_rate_in_losses": 0.1,
+   "board_wipe_avoidance_rate": 0.96
+  },
+  "champion": {
+   "losses": 15,
+   "board_wipe_count": 0,
+   "board_wipe_rate_in_losses": 0.0,
+   "board_wipe_avoidance_rate": 1.0
+  }
+ },
+ "a_move_max_ms_over_matches": {
+  "mean": 201.2,
+  "max": 203.8
+ },
+ "search_throughput": {
+  "candidate_sims_per_s": 308.4,
+  "champion_sims_per_s": 180.8,
+  "candidate_vs_champion_ratio": 1.706
+ },
+ "per_deck": {
+  "01_dragapult.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "02_raging_bolt_ogerpon.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "03_dragapult_blaziken.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "04_dragapult_dusknoir.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "05_dragapult_dudunsparce.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "06_hydrapple.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "07_n_s_zoroark_n.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "08_ogerpon_box.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "09_slowking.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "10_hop_s_trevenant.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "11_lillie_s_clefairy.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "12_alakazam_dudunsparce.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "13_festival_lead.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "14_mega_lucario_ex.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "15_marnie_s_grimmsnarl_ex.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "16_crustle_mysterious_rock_inn.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "17_rocket_s_mewtwo_ex.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "18_rocket_s_honchkrow.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "19_ethan_s_typhlosion.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "20_cynthia_s_garchomp_ex.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "21_lillie_s_clefairy_ex_naic_champion.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "22_dragapult_ex_naic_2nd.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "23_slowking_naic_4th.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  },
+  "24_n_s_zoroark_ex_naic_10th.csv": {
+   "n": 1,
+   "a_wins": 1,
+   "a_rate": 1.0
+  },
+  "25_mega_lopunny_ex.csv": {
+   "n": 1,
+   "a_wins": 0,
+   "a_rate": 0.0
+  }
+ }
+}
