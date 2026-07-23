@@ -53,6 +53,13 @@ DEFAULT_WEIGHTS = {
     # Apply preservation only while this many prizes remain. Near a win,
     # drawing for the finisher remains correctly valued.
     "deck_low_prize_gate": 0,
+    # Next-turn board survival (SOT-1878).  For each side, estimate the
+    # opponent's highest currently energy-payable attack from Active or
+    # Bench (a conservative switch/retreat response).  If that damage can
+    # knock out every visible Pokémon, apply this penalty.  Default 0 keeps
+    # the promoted champion byte-for-byte equivalent; candidates enable it
+    # through eval_weights and must pass the league promotion gate.
+    "board_wipe": 0.0,
     "scale": 0.6,         # logistic scale on the score difference
 }
 
@@ -69,10 +76,11 @@ class Evaluator:
 class HeuristicEvaluator(Evaluator):
     """Card-attribute heuristic value; terminal results are exact."""
 
-    def __init__(self, weights: dict | None = None):
+    def __init__(self, weights: dict | None = None, card_index=None):
         self.weights = dict(DEFAULT_WEIGHTS)
         if weights:
             self.weights.update(weights)
+        self._cards = card_index
 
     def evaluate(self, obs, root_player: int) -> float:
         current = getattr(obs, "current", None)
@@ -88,11 +96,51 @@ class HeuristicEvaluator(Evaluator):
         players = getattr(current, "players", None) or ()
         if len(players) < 2:
             return 0.5
-        diff = (self._side_score(players[root_player])
-                - self._side_score(players[1 - root_player]))
+        diff = (self._side_score(players[root_player],
+                                 players[1 - root_player])
+                - self._side_score(players[1 - root_player],
+                                   players[root_player]))
         return 1.0 / (1.0 + math.exp(-self.weights["scale"] * diff))
 
-    def _side_score(self, p) -> float:
+    def _reachable_damage(self, attacker) -> float:
+        """Highest damage the opponent can reach next turn from its board.
+
+        Active and Bench are both considered because a legal switch/retreat
+        can expose a charged Bench attacker.  Energy cost and damage come
+        solely from the card master; unknown/facedown cards contribute zero.
+        """
+        if self._cards is None:
+            return 0.0
+        best = 0.0
+        in_play = list(getattr(attacker, "active", None) or ())
+        in_play += list(getattr(attacker, "bench", None) or ())
+        for pk in in_play:
+            if pk is None:
+                continue
+            energy = len(getattr(pk, "energies", None) or ())
+            card = self._cards.card(getattr(pk, "id", None))
+            for attack_id in card.attack_ids:
+                attack = self._cards.attack(attack_id)
+                if attack.energy_cost <= energy:
+                    best = max(best, float(attack.damage))
+        return best
+
+    def board_wipe_risk(self, defender, attacker) -> float:
+        """Return 1 when all visible defenders are exposed next turn."""
+        damage = self._reachable_damage(attacker)
+        if damage <= 0:
+            return 0.0
+        in_play = list(getattr(defender, "active", None) or ())
+        in_play += list(getattr(defender, "bench", None) or ())
+        known_hp = [float(getattr(pk, "hp", 0) or 0)
+                    for pk in in_play if pk is not None]
+        # Facedown defenders are an unknown escape route, so do not claim a
+        # full wipe. Empty boards are handled by the engine's terminal state.
+        if not known_hp or any(pk is None for pk in in_play):
+            return 0.0
+        return float(all(0 < hp <= damage for hp in known_hp))
+
+    def _side_score(self, p, opponent=None) -> float:
         w = self.weights
         prize = getattr(p, "prize", None) or ()
         score = w["prize_taken"] * max(0, PRIZE_START - len(prize))
@@ -121,6 +169,8 @@ class HeuristicEvaluator(Evaluator):
                 gate = w.get("deck_low_prize_gate", 0) or 0
                 if not gate or len(prize) >= gate:
                     score += w.get("deck_low", 0.0) * (thr - deck)
+        if opponent is not None and w.get("board_wipe", 0.0):
+            score += w["board_wipe"] * self.board_wipe_risk(p, opponent)
         return score
 
 
